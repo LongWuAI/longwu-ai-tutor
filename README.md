@@ -103,6 +103,8 @@ If you build on these ideas, prioritize: how memory is designed, where the displ
 
 ## 四、演示 | Demo
 
+**[🌐 打开产品落地页 | Open the Product Landing Page](index.html)** — 三个学段的完整产品形态与在线演示（中英双语）
+
 静态演示页（仅展示"展示层"效果，无交互逻辑）：
 
 - [互动演示 | Interactive Demo](demo/interactive-demo.html) — 一节课的展示层形态

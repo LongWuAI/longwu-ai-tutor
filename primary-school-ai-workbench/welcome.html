@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>龙悟 · WorkBuddy小学生AI学习工作台 · 覆盖 1-6 年级 + 小升初</title>
+<!-- 本地库（离线可用） -->
+<link rel="stylesheet" href="components/math/lib/katex.min.css">
+<script defer src="components/math/lib/katex.min.js"></script>
+<script defer src="components/math/lib/auto-render.min.js"></script>
+<script src="components/math/lib/jsxgraphcore.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+:root {
+  --blue: #5b7cfa; --purple: #8b5cf6; --orange: #ff9f43; --yellow: #ffd93d;
+  --green: #6bcb77; --pink: #ff6b9d; --cyan: #4ecdc4;
+  --ink: #2d3142; --sub: #6b7280;
+}
+body {
+  background: linear-gradient(160deg, #eef2ff 0%, #fdf2f8 40%, #f0fdf4 100%);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+.wrap { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
+
+/* 渐变文字 */
+.grad { background: linear-gradient(120deg, var(--blue), var(--purple), var(--pink)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* ===== Hero ===== */
+.hero { text-align: center; padding: 56px 20px 34px; position: relative; }
+.float-deco { position: absolute; font-size: 22px; opacity: .5; animation: float 4s ease-in-out infinite; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.badge { display: inline-block; padding: 8px 22px; border-radius: 30px; background: #fff;
+  box-shadow: 0 4px 14px rgba(91,124,250,.15); color: var(--blue); font-size: 14px; font-weight: 700; letter-spacing: .5px; }
+.hero h1 { font-size: 38px; margin: 22px 0 10px; line-height: 1.25; font-weight: 900; }
+.hero .slogan { font-size: 17px; color: var(--sub); line-height: 1.9; }
+.hero .pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 26px; }
+.pill { padding: 11px 20px; border-radius: 26px; background: #fff; font-size: 14px; font-weight: 700;
+  box-shadow: 0 3px 12px rgba(0,0,0,.06); color: var(--ink); transition: all .25s; }
+.pill:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(91,124,250,.2); }
+
+/* ===== 区块标题 ===== */
+.section { margin-top: 48px; }
+.section-title { text-align: center; font-size: 26px; font-weight: 900; margin-bottom: 8px; }
+.section-sub { text-align: center; color: var(--sub); font-size: 14px; margin-bottom: 26px; }
+
+/* ===== 痛点 ===== */
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+.pain { background: #fff; border-radius: 22px; padding: 22px 18px; text-align: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,.05); transition: all .25s; border: 2px solid transparent; }
+.pain:hover { transform: translateY(-5px); border-color: #e0e7ff; }
+.pain .icon { font-size: 34px; display: block; margin-bottom: 10px; }
+.pain h3 { font-size: 15px; margin-bottom: 6px; }
+.pain p { font-size: 13px; color: var(--sub); line-height: 1.7; }
+
+/* ===== 能力 tab ===== */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 22px; }
+.tab { padding: 11px 20px; border-radius: 24px; background: #fff; border: 2px solid #e5e7eb;
+  cursor: pointer; font-size: 14px; font-weight: 700; color: var(--ink); transition: all .2s; }
+.tab.active { background: linear-gradient(120deg, var(--blue), var(--purple)); color: #fff; border-color: transparent; box-shadow: 0 6px 18px rgba(91,124,250,.35); }
+.tab:hover:not(.active) { border-color: var(--blue); }
+.panel { background: #fff; border-radius: 24px; padding: 30px; min-height: 160px;
+  box-shadow: 0 8px 26px rgba(0,0,0,.06); animation: fade .3s; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.panel h3 { font-size: 19px; margin-bottom: 12px; }
+.panel p, .panel li { font-size: 15px; color: var(--sub); line-height: 1.9; }
+.panel ul { padding-left: 22px; }
+.panel li b { color: var(--ink); }
+
+/* ===== 可视化 demo ===== */
+.viz-header { display: flex; gap: 8px; justify-content: center; margin-top: 34px; margin-bottom: 18px; }
+.viz-tab { padding: 9px 20px; border-radius: 22px; background: #fff; border: 2px solid #e5e7eb;
+  cursor: pointer; font-size: 14px; font-weight: 700; color: var(--ink); transition: all .2s; }
+.viz-tab.active { background: linear-gradient(120deg, var(--cyan), var(--green)); color: #fff; border-color: transparent; box-shadow: 0 6px 18px rgba(78,205,196,.3); }
+.demo-box { background: #fff; border-radius: 24px; padding: 24px; text-align: center; box-shadow: 0 8px 26px rgba(0,0,0,.06); }
+.demo-box .demo-label { font-size: 13px; color: var(--blue); font-weight: 700; margin-bottom: 10px; }
+#viz-balance { height: 260px; }
+#viz-axis { width: 100%; height: 180px; }
+#viz-pizza svg { max-width: 300px; }
+
+/* ===== 出题演示 ===== */
+.chat-demo { background: #fff; border-radius: 24px; padding: 24px; max-width: 620px; margin: 0 auto; box-shadow: 0 8px 26px rgba(0,0,0,.06); }
+.msg { display: flex; gap: 10px; margin-bottom: 14px; }
+.msg.teacher { justify-content: flex-start; }
+.msg.student { justify-content: flex-end; }
+.msg .bubble { padding: 11px 17px; border-radius: 18px; font-size: 15px; line-height: 1.7; max-width: 82%; }
+.msg.teacher .bubble { background: #f1f5ff; border: 1px solid #e0e7ff; border-top-left-radius: 5px; }
+.msg.student .bubble { background: linear-gradient(120deg, var(--orange), var(--pink)); color: #fff; border-top-right-radius: 5px; }
+.socratic-ctl { text-align: center; margin-top: 8px; }
+.next-btn { padding: 12px 30px; border: none; border-radius: 26px; background: linear-gradient(120deg, var(--blue), var(--purple));
+  color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; transition: all .2s; box-shadow: 0 6px 16px rgba(91,124,250,.3); }
+.next-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(91,124,250,.4); }
+
+/* ===== 三步 ===== */
+.steps3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+.step3 { background: #fff; border-radius: 22px; padding: 26px 20px; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,.05); transition: all .25s; }
+.step3:hover { transform: translateY(-5px); }
+.step3 .num { width: 44px; height: 44px; margin: 0 auto 14px; border-radius: 50%; color: #fff; font-size: 20px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center; }
+.step3 h4 { font-size: 16px; margin-bottom: 6px; }
+.step3 p { font-size: 13px; color: var(--sub); line-height: 1.7; }
+
+.footer { text-align: center; margin-top: 56px; padding-top: 26px; border-top: 1px solid #e5e7eb; color: var(--sub); font-size: 13px; line-height: 1.9; }
+@media (max-width: 600px) { .hero h1 { font-size: 28px; } .grad { -webkit-text-fill-color: var(--blue); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <span style="position:absolute;top:80px;left:6%;">✨</span>
+    <span style="position:absolute;top:120px;right:8%;">🚀</span>
+    <span style="position:absolute;top:220px;left:3%;">🎈</span>
+    <span class="badge">🎒 小学 1-6 年级 · 小升初冲刺 · 一个会教书的文件夹</span>
+    <h1>龙悟 · WorkBuddy<br><span class="grad">小学生AI学习工作台</span></h1>
+    <p class="slogan">一个<b>会教书、懂孩子、记得住</b>的 AI 虚拟学校，住在你家的文件夹里。<br>一年级到小升初，全年级都能用 · 解压即用 · 离线可用 · 隐私留在家。</p>
+    <p style="font-size:13px;color:var(--ink);margin-top:6px;opacity:.85;">📱 抖音 / 小红书 / 视频号 搜「<b>龙悟AI创业</b>」，看真实功能演示</p>
+    <div class="pills">
+      <span class="pill">🏫 一位校长 + N 位老师</span>
+      <span class="pill">🎓 苏格拉底式讲题</span>
+      <span class="pill">📐 可视化教学</span>
+      <span class="pill">👤 千人千面</span>
+      <span class="pill">🔄 越用越懂</span>
+      <span class="pill">📸 拍照批改作业</span>
+      <span class="pill">🔧 可扩展升级</span>
+    </div>
+  </div>
+
+  <!-- 痛点 -->
+  <div class="section">
+    <div class="section-title">解决这些<span class="grad">老大难</span></div>
+    <div class="section-sub">从一年级一路陪到小升初，家长不累、孩子不烦</div>
+    <div class="pain-grid">
+      <div class="pain"><span class="icon">😰</span><h3>家长不会讲</h3><p>孩子一问就卡住，报班又贵又折腾。AI 老师一对一引导。</p></div>
+      <div class="pain"><span class="icon">📚</span><h3>错题越堆越多</h3><p>拍照发给老师，AI 批改、讲错因、自动记错题本。</p></div>
+      <div class="pain"><span class="icon">👥</span><h3>大班课听不懂</h3><p>每个孩子一条路。AI 读画像，千人千面，从实际水平出发。</p></div>
+      <div class="pain"><span class="icon">📉</span><h3>年级断层</h3><p>一升二、二升三…基础知识没打牢，越学越吃力。</p></div>
+      <div class="pain"><span class="icon">🎯</span><h3>小升初没方向</h3><p>校长读画像定计划，薄弱点逐个攻，考什么补什么。</p></div>
+    </div>
+  </div>
+
+  <!-- 能力 tab -->
+  <div class="section">
+    <div class="section-title">它能<span class="grad">做什么</span></div>
+    <div class="section-sub">点下面的卡片看看</div>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-t="school">🏫 虚拟学校</button>
+      <button class="tab" data-t="grade">🎒 全年级</button>
+      <button class="tab" data-t="visual">📐 可视化教学</button>
+      <button class="tab" data-t="profile">👤 千人千面</button>
+      <button class="tab" data-t="evolve">🔄 越用越懂</button>
+      <button class="tab" data-t="extend">🔧 可扩展</button>
+      <button class="tab" data-t="grade2">📸 拍照批改</button>
+    </div>
+    <div class="panel" id="panel"></div>
+  </div>
+
+  <!-- 可视化 demo -->
+  <div class="section">
+    <div class="section-title">眼见为实 · <span class="grad">真实可视化</span></div>
+    <div class="section-sub">这些不是截图，是浏览器里实时渲染的精确图形</div>
+    <div class="viz-header">
+      <button class="viz-tab active" data-v="balance">⚖️ 天平</button>
+      <button class="viz-tab" data-v="axis">📏 数轴</button>
+      <button class="viz-tab" data-v="pizza">🍕 披萨</button>
+    </div>
+    <div class="demo-box" id="demoBox"></div>
+  </div>
+
+  <!-- 出题演示 -->
+  <div class="section">
+    <div class="section-title">出题效果 · <span class="grad">苏格拉底引导</span></div>
+    <div class="section-sub">不直接报答案，一步步问，让孩子自己想出来</div>
+    <div class="chat-demo">
+      <div id="socratic"></div>
+      <div class="socratic-ctl"><button class="next-btn" id="nextSocratic">下一步 ▶</button></div>
+    </div>
+  </div>
+
+  <!-- 三步 -->
+  <div class="section">
+    <div class="section-title">怎么<span class="grad">开始用</span></div>
+    <div class="section-sub">三步，不用安装、不用登录、不用配 API</div>
+    <div class="steps3">
+      <div class="step3"><div class="num" style="background:var(--blue);">1</div><h4>解压文件夹</h4><p>解压到任意盘（不碰 C 盘）</p></div>
+      <div class="step3"><div class="num" style="background:var(--purple);">2</div><h4>WorkBuddy 打开</h4><p>用 WorkBuddy / Trae / Codex 打开文件夹</p></div>
+      <div class="step3"><div class="num" style="background:var(--pink);">3</div><h4>对话里开始学</h4><p>说句"开始学习"，AI 老师就来啦</p></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div style="font-size:16px;font-weight:900;color:var(--ink);margin-bottom:12px;">关注龙悟 · 获取更多 AI 内容</div>
+    <div style="margin-bottom:8px;font-size:14px;">🎒 <b>龙悟AI创业</b>（抖音 / 小红书 / 视频号）— 青少年教育 · 学习工作台 · 智能体开发</div>
+    <div style="margin-bottom:14px;font-size:14px;">🚀 <b>龙悟IP智能体</b>（抖音 / 小红书 / 视频号）— 企业 AI 化改造 · 个人 IP 创业 · 智能体开发</div>
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:13px;">
+      龙悟 · WorkBuddy小学生AI学习工作台 · 覆盖 1-6 年级 + 小升初冲刺<br>
+      孩子学到的数据保存在本文件夹 profile/ 里，隐私留在你家电脑
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 能力面板内容 =====
+const PANELS = {
+  school: `<h3>🏫 一所完整的虚拟学校</h3>
+    <p>打开文件夹，你就拥有了一所 AI 学校：</p>
+    <ul>
+      <li>👑 <b>校长</b>：入学测评、学情规划、定目标、调和家长与孩子</li>
+      <li>🧮 <b>数学王老师</b>：苏格拉底讲题 + 天平/数轴可视化</li>
+      <li>📖 <b>语文李老师</b>：古诗生图、文言文、阅读、作文</li>
+      <li>🌍 <b>英语张老师</b>：单词配图+发音、时态时间轴</li>
+      <li>🏫 <b>教师办公室</b>：一个老师主讲，其他老师静默观察、递建议</li>
+      <li>➕ <b>还能创建新老师</b>：想加科学、奥数，跟 AI 说一声就行</li>
+    </ul>`,
+  grade: `<h3>🎒 一年级到小升初，一路陪到底</h3>
+    <ul>
+      <li>🌱 <b>低年级（1-2）</b>：打地基，20 以内加减、拼音识字、看图说话</li>
+      <li>📈 <b>中年级（3-4）</b>：分数入门、乘除法、阅读理解、简单写作</li>
+      <li>🔥 <b>高年级（5-6）</b>：方程、分数应用、几何、小升初真题</li>
+      <li>🎯 <b>小升初冲刺</b>：校长按薄弱点定计划，考什么补什么</li>
+      <li>🔄 <b>知识点连贯</b>：同一套知识体系，难度随年级递进，不断层</li>
+    </ul>`,
+  visual: `<h3>📐 把抽象的东西"画"出来</h3>
+    <p>数学最怕看不见学不会。AI 现场生成精确图形（不是手绘假图）：</p>
+    <ul>
+      <li>⚖️ 方程 → 天平模型</li>
+      <li>📏 负数/数轴 → 数轴</li>
+      <li>🍕 分数 → 披萨图 / 线段图</li>
+      <li>📐 几何 → JSXGraph 精确图形 + KaTeX 公式</li>
+      <li>🖼️ 古诗 → 真实水墨生图；✍️ 汉字 → 笔顺动画</li>
+    </ul>
+    <p style="margin-top:10px;color:var(--blue);font-weight:700;">👇 往下滑，看真实的三个动画</p>`,
+  profile: `<h3>👤 千人千面 · 记得住每个孩子</h3>
+    <ul>
+      <li>📊 <b>掌握度</b>：每个知识点学到哪、薄弱在哪</li>
+      <li>🎯 <b>学习偏好</b>：爱看动画还是爱做题</li>
+      <li>🗣️ <b>术语水平</b>：听不懂就自动换大白话</li>
+      <li>📝 <b>错题本</b>：每道错题、错因都记着</li>
+      <li>😊 <b>情绪</b>：烦躁了就缓一缓，不硬灌</li>
+    </ul>`,
+  evolve: `<h3>🔄 越用越懂 · 老师也在进步</h3>
+    <ul>
+      <li>教学方法沉淀：<b>"用数轴+欠钱比喻，小明一次就懂了"</b></li>
+      <li>下次直接复用有效方法，避开无效方法</li>
+      <li>错因积累：知道这孩子容易在哪个点翻车</li>
+      <li>孩子越来越会学，老师越来越会教</li>
+    </ul>`,
+  extend: `<h3>🔧 可扩展 · 跟着需求一起长</h3>
+    <ul>
+      <li>➕ 想加新学科（科学/奥数）→ 说一声</li>
+      <li>➕ 想加新知识点、新题型 → 说一声</li>
+      <li>✏️ 想改老师语气、严格度 → 说一声</li>
+      <li>📈 想加打卡、家长周报 → 说一声</li>
+      <li>所有扩展都是"改文件"，改完即生效</li>
+    </ul>`,
+  grade2: `<h3>📸 拍照批改作业</h3>
+    <ul>
+      <li>👀 AI 读图，看清题目和孩子写的答案</li>
+      <li>✅ 逐个判断对错，错题苏格拉底引导改正</li>
+      <li>📝 自动记进错题本，标出错因</li>
+      <li>📄 文字/PDF 也能处理；图片最可靠</li>
+    </ul>`
+};
+const tabs = document.querySelectorAll('.tab');
+const panel = document.getElementById('panel');
+function renderPanel() { panel.innerHTML = PANELS[document.querySelector('.tab.active').dataset.t]; }
+tabs.forEach(t => t.onclick = () => { tabs.forEach(x => x.classList.remove('active')); t.classList.add('active'); renderPanel(); });
+renderPanel();
+
+// ===== 可视化 demo =====
+JXG.Options.point = Object.assign({}, JXG.Options.point, { visible: false, withLabel: false });
+JXG.Options.line = Object.assign({}, JXG.Options.line, { strokeColor: '#7a5a38', strokeWidth: 1.5 });
+JXG.Options.polygon = Object.assign({}, JXG.Options.polygon, {
+  fillOpacity: 1,
+  vertices: Object.assign({}, JXG.Options.polygon.vertices || {}, { visible: false, withLabel: false }),
+  borders: Object.assign({}, JXG.Options.polygon.borders || {}, { visible: false })
+});
+
+function renderViz(v) {
+  const box = document.getElementById('demoBox');
+  if (v === 'balance') {
+    box.innerHTML = `<div class="demo-label">⚖️ 方程天平 · x + 3 = 7（JSXGraph 精确图）</div><div id="viz-balance"></div>
+      <div id="eq-balance" style="font-size:24px;margin-top:6px;"></div>`;
+    setTimeout(() => {
+      const b = JXG.JSXGraph.initBoard('viz-balance', { boundingbox: [-5.4,4.2,5.4,-2.4], axis:false, grid:false, pan:false, zoom:false, showNavigation:false, showCopyright:false, keepaspectratio:false });
+      const sx = 0;
+      b.create('polygon', [[sx-0.08,-1.5],[sx+0.08,-1.5],[sx+0.08,2.0],[sx-0.08,2.0]], {fillColor:'#a8845c',strokeColor:'#7a5a38',strokeWidth:1});
+      b.create('polygon', [[-3.9,2.4],[3.9,2.4],[3.9,2.56],[-3.9,2.56]], {fillColor:'#c9a06c',strokeColor:'#8b5e3c',strokeWidth:1});
+      b.create('line', [[sx-2.6,2.56],[sx-2.6,0.9]], {strokeColor:'#7a5a38',strokeWidth:1.5,dashed:true,firstPoint:{visible:false},secondPoint:{visible:false}});
+      b.create('line', [[sx+2.6,2.56],[sx+2.6,0.9]], {strokeColor:'#7a5a38',strokeWidth:1.5,dashed:true,firstPoint:{visible:false},secondPoint:{visible:false}});
+      b.create('line', [[sx-3.0,0.9],[sx-2.2,0.9]], {strokeColor:'#b07a4a',strokeWidth:3,firstPoint:{visible:false},secondPoint:{visible:false}});
+      b.create('line', [[sx+2.2,0.9],[sx+3.0,0.9]], {strokeColor:'#b07a4a',strokeWidth:3,firstPoint:{visible:false},secondPoint:{visible:false}});
+      const put = (cx, blocks) => { const n=blocks.length, sp=0.6, x0=cx-(n-1)*sp/2; blocks.forEach((s,i)=>{ const bx=x0+i*sp; const c=s==='x'?'#c17f4e':'#8b7355'; b.create('polygon',[[bx-0.26,0.12],[bx+0.26,0.12],[bx+0.26,0.72],[bx-0.26,0.72]],{fillColor:c,strokeColor:'#fff',strokeWidth:1}); b.create('text',[bx,0.9,s],{fontSize:13,color:'#fff',bold:true,anchorX:'middle'}); }); };
+      put(sx-2.6, ['x','3']); put(sx+2.6, ['7']);
+      document.getElementById('eq-balance').innerHTML = '\\(x + 3 = 7\\)';
+      function tryRender() { if (window.renderMathInElement) { renderMathInElement(document.getElementById('eq-balance')); } else { setTimeout(tryRender, 100); } }
+      tryRender();
+    }, 60);
+  } else if (v === 'axis') {
+    box.innerHTML = `<div class="demo-label">📏 数轴 · 负数住在 0 左边（Canvas 精确刻度）</div><canvas id="viz-axis"></canvas>`;
+    setTimeout(() => {
+      const cv = document.getElementById('viz-axis'); const ctx = cv.getContext('2d');
+      cv.width = cv.offsetWidth * 2; cv.height = 180 * 2; cv.style.height = '180px';
+      const W=cv.width, H=cv.height, midY=H/2, pad=30, minV=-4, maxV=4;
+      const xFor = v => pad + (v-minV)/(maxV-minV)*(W-2*pad);
+      ctx.lineWidth=3; ctx.strokeStyle='#5b7cfa'; ctx.beginPath(); ctx.moveTo(pad,midY); ctx.lineTo(W-pad,midY); ctx.stroke();
+      ctx.fillStyle='#2d3142'; ctx.font='bold 28px sans-serif'; ctx.textAlign='center';
+      for (let v=minV;v<=maxV;v++){ const x=xFor(v); ctx.strokeStyle='#c7d2fe'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x,midY-8); ctx.lineTo(x,midY+8); ctx.stroke(); ctx.fillStyle='#2d3142'; ctx.fillText(v,x,midY+40); }
+      const mark=(v,c,l)=>{ const x=xFor(v); ctx.beginPath(); ctx.arc(x,midY-30,10,0,2*Math.PI); ctx.fillStyle=c; ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke(); ctx.fillStyle=c; ctx.font='bold 24px sans-serif'; ctx.fillText(l,x,midY-50); };
+      mark(-2,'#ff6b9d','-2'); mark(2,'#6bcb77','2');
+    }, 60);
+  } else if (v === 'pizza') {
+    box.innerHTML = `<div class="demo-label">🍕 分数 · 1/2 和 1/4（SVG 精确切分）</div>
+      <div style="display:flex;gap:30px;justify-content:center;align-items:center;" id="viz-pizza"></div>`;
+    const draw = (num, den, color) => { let s=''; const cx=100,cy=100,r=88; s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>`; for(let i=0;i<den;i++){ const a=360/den*i*Math.PI/180; s+=`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a)}" y2="${cy+r*Math.sin(a)}" stroke="#f59e0b" stroke-width="2"/>`; } for(let i=0;i<num;i++){ const a0=360/den*i*Math.PI/180, a1=360/den*(i+1)*Math.PI/180; s+=`<path d="M${cx},${cy} L${cx+r*Math.cos(a0)},${cy+r*Math.sin(a0)} A${r},${r} 0 0 1 ${cx+r*Math.cos(a1)},${cy+r*Math.sin(a1)} Z" fill="${color}" stroke="#f59e0b" stroke-width="2"/>`; } return `<svg width="150" height="150" viewBox="0 0 200 200">${s}</svg><div style="text-align:center;font-weight:800;margin-top:6px;">${num}/${den}</div>`; };
+    const w = document.getElementById('viz-pizza');
+    w.innerHTML = `<div>${draw(1,2,'#ff9f43')}</div><div style="font-size:30px;color:#f59e0b;font-weight:900;">&gt;</div><div>${draw(1,4,'#ff6b9d')}</div>`;
+  }
+}
+const vizTabs = document.querySelectorAll('.viz-tab');
+vizTabs.forEach(t => t.onclick = () => { vizTabs.forEach(x=>x.classList.remove('active')); t.classList.add('active'); renderViz(t.dataset.v); });
+renderViz('balance');
+
+// ===== 出题演示（苏格拉底） =====
+const SCRIPT = [
+  { who: 'teacher', text: '小明，看这个天平：左边有 x 和 3，右边是 7，天平平平的。这说明 x + 3 和 7 什么关系？' },
+  { who: 'student', text: '相等！' },
+  { who: 'teacher', text: '对！那想让 x 一个人留在左边，该怎么处理那个 3？' },
+  { who: 'student', text: '从两边都拿走 3。' },
+  { who: 'teacher', text: '完全正确！右边 7 - 3 = 4，所以 x = 4。你看，我没有直接告诉你答案，是你自己一步步想出来的。' }
+];
+let si = 0;
+const socraticEl = document.getElementById('socratic');
+function stepSocratic() {
+  if (si >= SCRIPT.length) { si = 0; socraticEl.innerHTML = ''; }
+  const s = SCRIPT[si];
+  const m = document.createElement('div');
+  m.className = 'msg ' + s.who;
+  m.innerHTML = `<div class="bubble">${s.who === 'teacher' ? '🧮 ' : '👦 '}${s.text}</div>`;
+  socraticEl.appendChild(m);
+  socraticEl.scrollTop = socraticEl.scrollHeight;
+  si++;
+  if (si >= SCRIPT.length) document.getElementById('nextSocratic').textContent = '🔄 重新演示';
+}
+stepSocratic();
+document.getElementById('nextSocratic').onclick = stepSocratic;
+</script>
+</body>
+</html>

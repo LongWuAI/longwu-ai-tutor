@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>龙悟 · WorkBuddy初中生AI学习工作台 · 覆盖初一至初三 + 初升高</title>
+<!-- 本地库（离线可用） -->
+<script src="components/math/lib/jsxgraphcore.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --paper: #f7f3ec;      /* 宣纸米白 */
+  --paper-2: #efe8dc;
+  --amber: #a8603a;      /* 暖琥珀主色 */
+  --amber-deep: #8a4c2c;
+  --ink: #2b2926;        /* 墨色 */
+  --sub: #7a6f63;        /* 灰褐 */
+  --blue: #2f4858;       /* 冷蓝（黛青）骨架 */
+  --line: #e2d8c8;       /* 细线 */
+  --gold: #b8924f;
+  --card: #fdfbf7;
+}
+body {
+  background: linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+  color: var(--ink);
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+.serif, .hero h1, .section-title, .panel h3, .pain .mark {
+  font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 24px 72px; }
+
+/* 暖金渐变强调文字 */
+.grad { background: linear-gradient(120deg, var(--amber), var(--gold), #7a4a2b);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* ===== Hero ===== */
+.hero { text-align: center; padding: 76px 20px 44px; position: relative; }
+.hero .badge { display: inline-block; padding: 8px 22px; border: 1px solid var(--line); border-radius: 2px;
+  background: rgba(255,255,255,.45); color: var(--amber-deep); font-size: 13px; letter-spacing: 3px; }
+.hero h1 { font-size: 42px; margin: 28px 0 18px; line-height: 1.35; font-weight: 700; color: var(--ink); letter-spacing: 2px; }
+.hero .slogan { font-size: 16px; color: var(--sub); line-height: 2; letter-spacing: .5px; }
+.hero .slogan b { color: var(--amber-deep); font-weight: 600; }
+.hero .pills { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
+.pill { padding: 9px 18px; border: 1px solid var(--line); border-radius: 2px; background: var(--card);
+  font-size: 13px; color: var(--sub); letter-spacing: 1px; transition: all .25s; }
+.pill:hover { border-color: var(--amber); color: var(--amber-deep); transform: translateY(-2px); }
+
+/* ===== 区块标题 ===== */
+.section { margin-top: 68px; }
+.section-title { text-align: center; font-size: 27px; font-weight: 700; color: var(--ink); margin-bottom: 8px; letter-spacing: 2px; }
+.section-title::after { content: ""; display: block; width: 40px; height: 2px; background: var(--amber); margin: 16px auto 0; }
+.section-sub { text-align: center; color: var(--sub); font-size: 14px; margin: 18px 0 34px; letter-spacing: .5px; }
+
+/* ===== 痛点 ===== */
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+.pain { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 26px 20px;
+  text-align: center; transition: all .25s; }
+.pain:hover { border-color: var(--amber); transform: translateY(-4px); box-shadow: 0 14px 32px rgba(168,96,58,.08); }
+.pain .mark { width: 42px; height: 42px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: var(--amber-deep); border: 1px solid var(--amber); border-radius: 2px; background: #fff; }
+.pain h3 { font-size: 15px; margin-bottom: 8px; font-weight: 700; }
+.pain p { font-size: 13px; color: var(--sub); line-height: 1.8; }
+
+/* ===== 能力 tab ===== */
+.tabs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 28px; }
+.tab { padding: 10px 22px; border-radius: 2px; background: var(--card); border: 1px solid var(--line);
+  cursor: pointer; font-size: 14px; color: var(--sub); letter-spacing: .5px; transition: all .2s; }
+.tab.active { background: var(--amber); color: #fff; border-color: var(--amber); box-shadow: 0 6px 18px rgba(168,96,58,.25); }
+.tab:hover:not(.active) { border-color: var(--amber); color: var(--amber-deep); }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 34px 34px 28px;
+  min-height: 160px; animation: fade .3s; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.panel h3 { font-size: 19px; margin-bottom: 16px; letter-spacing: 1px; }
+.panel p, .panel li { font-size: 15px; color: var(--sub); line-height: 1.95; }
+.panel ul { padding-left: 0; list-style: none; }
+.panel li { position: relative; padding-left: 18px; }
+.panel li::before { content: ""; position: absolute; left: 2px; top: 14px; width: 5px; height: 5px; background: var(--amber); border-radius: 50%; }
+.panel li b { color: var(--ink); font-weight: 600; }
+.panel .hint { margin-top: 14px; color: var(--amber-deep); font-size: 14px; }
+
+/* ===== 可视化 demo ===== */
+.viz-header { display: flex; gap: 10px; justify-content: center; margin-bottom: 22px; }
+.viz-tab { padding: 9px 24px; border-radius: 2px; background: var(--card); border: 1px solid var(--line);
+  cursor: pointer; font-size: 14px; color: var(--sub); letter-spacing: 1px; transition: all .2s; }
+.viz-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); box-shadow: 0 6px 18px rgba(47,72,88,.22); }
+.viz-tab:hover:not(.active) { border-color: var(--blue); color: var(--blue); }
+.demo-box { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 30px 24px; text-align: center; }
+.demo-box .demo-label { font-size: 13px; color: var(--amber-deep); letter-spacing: 1px; margin-bottom: 14px; }
+#viz-func { width: 100%; }
+#viz-buoy { width: 100%; }
+
+/* ===== 出题演示 ===== */
+.chat-demo { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 28px;
+  max-width: 640px; margin: 0 auto; }
+.msg { display: flex; gap: 10px; margin-bottom: 16px; align-items: flex-start; }
+.msg.teacher { justify-content: flex-start; }
+.msg.student { justify-content: flex-end; }
+.avatar { width: 28px; height: 28px; border-radius: 50%; flex: none; display: flex; align-items: center;
+  justify-content: center; font-size: 12px; color: #fff; letter-spacing: 0; }
+.msg.teacher .avatar { background: var(--blue); }
+.msg.student .avatar { background: var(--amber); }
+.msg .bubble { padding: 12px 18px; border-radius: 6px; font-size: 15px; line-height: 1.8; max-width: 82%; }
+.msg.teacher .bubble { background: #f0eae0; border: 1px solid var(--line); border-top-left-radius: 2px; }
+.msg.student .bubble { background: var(--amber); color: #fff; border-top-right-radius: 2px; }
+.socratic-ctl { text-align: center; margin-top: 6px; }
+.next-btn { padding: 12px 36px; border: none; border-radius: 2px; background: var(--amber); color: #fff;
+  font-size: 15px; letter-spacing: 2px; cursor: pointer; transition: all .2s; box-shadow: 0 6px 16px rgba(168,96,58,.25); }
+.next-btn:hover { transform: translateY(-2px); background: var(--amber-deep); box-shadow: 0 10px 24px rgba(168,96,58,.35); }
+
+/* ===== 三步 ===== */
+.steps3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+.step3 { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 30px 20px;
+  text-align: center; transition: all .25s; }
+.step3:hover { transform: translateY(-4px); border-color: var(--amber); }
+.step3 .num { width: 44px; height: 44px; margin: 0 auto 16px; border-radius: 2px; color: #fff;
+  font-size: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; font-family: serif; }
+.step3 h4 { font-size: 16px; margin-bottom: 8px; }
+.step3 p { font-size: 13px; color: var(--sub); line-height: 1.8; }
+
+.footer { text-align: center; margin-top: 68px; padding-top: 30px; border-top: 1px solid var(--line);
+  color: var(--sub); font-size: 12px; line-height: 2; letter-spacing: .5px; }
+@media (max-width: 600px) {
+  .hero h1 { font-size: 30px; }
+  .grad { -webkit-text-fill-color: var(--amber); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <span class="badge">初一至初三 · 初升高冲刺 · 一个会教书的文件夹</span>
+    <h1>龙悟 · WorkBuddy<br><span class="grad">初中生AI学习工作台</span></h1>
+    <p class="slogan">一个<b>会教书、懂孩子、记得住</b>的 AI 虚拟学校，住在你家的文件夹里。<br>初一到初三，语数英物化五科全陪 · 解压即用 · 离线可用 · 隐私留在家。</p>
+    <p style="font-size:13px;color:var(--ink);margin-top:6px;opacity:.85;">📱 抖音 / 小红书 / 视频号 搜「<b>龙悟AI创业</b>」，看真实功能演示</p>
+    <div class="pills">
+      <span class="pill">一位校长 · 五科老师</span>
+      <span class="pill">苏格拉底式讲题</span>
+      <span class="pill">可视化教学</span>
+      <span class="pill">千人千面</span>
+      <span class="pill">越用越懂</span>
+      <span class="pill">拍照批改作业</span>
+      <span class="pill">可扩展升级</span>
+    </div>
+  </div>
+
+  <!-- 痛点 -->
+  <div class="section">
+    <div class="section-title">解决这些老大难</div>
+    <div class="section-sub">从初一一路陪到初升高，家长不累、孩子不烦</div>
+    <div class="pain-grid">
+      <div class="pain"><span class="mark">问</span><h3>家长不会讲</h3><p>孩子一问就卡住，报班又贵又折腾。AI 老师一对一引导。</p></div>
+      <div class="pain"><span class="mark">错</span><h3>错题越堆越多</h3><p>拍照发给老师，AI 批改、讲错因、自动记错题本。</p></div>
+      <div class="pain"><span class="mark">忙</span><h3>大班课听不懂</h3><p>每个孩子一条路。AI 读画像，千人千面，从实际水平出发。</p></div>
+      <div class="pain"><span class="mark">累</span><h3>学科暴增跟不上</h3><p>初一基础没打牢，初二一上物理，越学越吃力。</p></div>
+      <div class="pain"><span class="mark">向</span><h3>初升高没方向</h3><p>校长读画像定计划，薄弱点逐个攻，中考考什么补什么。</p></div>
+    </div>
+  </div>
+
+  <!-- 能力 tab -->
+  <div class="section">
+    <div class="section-title">它能做什么</div>
+    <div class="section-sub">点下面的卡片看看</div>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-t="school">虚拟学校</button>
+      <button class="tab" data-t="grade">全年级</button>
+      <button class="tab" data-t="visual">可视化教学</button>
+      <button class="tab" data-t="profile">千人千面</button>
+      <button class="tab" data-t="evolve">越用越懂</button>
+      <button class="tab" data-t="extend">可扩展</button>
+      <button class="tab" data-t="grade2">拍照批改</button>
+    </div>
+    <div class="panel" id="panel"></div>
+  </div>
+
+  <!-- 可视化 demo -->
+  <div class="section">
+    <div class="section-title">眼见为实 · 真实可视化</div>
+    <div class="section-sub">这些不是截图，是浏览器里实时渲染的精确图形</div>
+    <div class="viz-header">
+      <button class="viz-tab active" data-v="func">数学 · 二次函数</button>
+      <button class="viz-tab" data-v="buoyancy">物理 · 浮力</button>
+      <button class="viz-tab" data-v="chem">化学 · 方程式</button>
+    </div>
+    <div class="demo-box" id="demoBox"></div>
+  </div>
+
+  <!-- 出题演示 -->
+  <div class="section">
+    <div class="section-title">出题效果 · 苏格拉底引导</div>
+    <div class="section-sub">不直接报答案，一步步问，让孩子自己想出来</div>
+    <div class="chat-demo">
+      <div id="socratic"></div>
+      <div class="socratic-ctl"><button class="next-btn" id="nextSocratic">下一步</button></div>
+    </div>
+  </div>
+
+  <!-- 三步 -->
+  <div class="section">
+    <div class="section-title">怎么开始用</div>
+    <div class="section-sub">三步，不用安装、不用登录、不用配 API</div>
+    <div class="steps3">
+      <div class="step3"><div class="num" style="background:var(--amber);">一</div><h4>解压文件夹</h4><p>解压到任意盘（不碰 C 盘）</p></div>
+      <div class="step3"><div class="num" style="background:var(--blue);">二</div><h4>WorkBuddy 打开</h4><p>用 WorkBuddy / Trae / Codex 打开文件夹</p></div>
+      <div class="step3"><div class="num" style="background:var(--gold);">三</div><h4>对话里开始学</h4><p>说句「开始学习」，AI 老师就来啦</p></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div style="font-size:16px;font-weight:900;color:var(--ink);margin-bottom:12px;">关注龙悟 · 获取更多 AI 内容</div>
+    <div style="margin-bottom:8px;font-size:14px;">🎒 <b>龙悟AI创业</b>（抖音 / 小红书 / 视频号）— 青少年教育 · 学习工作台 · 智能体开发</div>
+    <div style="margin-bottom:14px;font-size:14px;">🚀 <b>龙悟IP智能体</b>（抖音 / 小红书 / 视频号）— 企业 AI 化改造 · 个人 IP 创业 · 智能体开发</div>
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:13px;">
+      龙悟 · WorkBuddy初中生AI学习工作台 · 覆盖初一至初三 + 初升高冲刺<br>
+      孩子学到的数据保存在本文件夹 profile/ 里，隐私留在你家电脑
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 能力面板内容 =====
+const PANELS = {
+  school: `<h3>一所完整的虚拟中学</h3>
+    <p>打开文件夹，你就拥有了一所 AI 中学：</p>
+    <ul>
+      <li><b>校长</b>：入学测评、学情规划、定目标、初升高冲刺规划</li>
+      <li><b>数学王老师</b>：函数 / 几何可视化 + 苏格拉底讲题</li>
+      <li><b>语文李老师</b>：古诗生图、文言文、阅读、作文</li>
+      <li><b>英语张老师</b>：单词构词、从句结构图、阅读写作</li>
+      <li><b>物理陈老师</b>：受力分析、电路图、欧姆定律</li>
+      <li><b>化学周老师</b>：化学用语、方程式配平、实验</li>
+      <li><b>教师办公室</b>：一位老师主讲，其他老师静默观察、递建议</li>
+    </ul>`,
+  grade: `<h3>初一到初三，一路陪到初升高</h3>
+    <ul>
+      <li><b>初一</b>：有理数、一元一次方程、英语基础语法，打牢地基</li>
+      <li><b>初二</b>：勾股定理、全等相似、一次函数；物理上线（力 / 压强 / 浮力）</li>
+      <li><b>初三</b>：二次函数、圆、物理电学、化学方程式</li>
+      <li><b>初升高冲刺</b>：校长按中考分值定计划，真题优先，考什么补什么</li>
+      <li><b>知识点连贯</b>：同一套知识体系，难度随年级递进，不断层</li>
+    </ul>`,
+  visual: `<h3>把抽象的东西「画」出来</h3>
+    <p>理科最怕看不见学不会。AI 现场生成各科的精确图形（不是手绘假图）：</p>
+    <ul>
+      <li>数学 → 函数图像、几何证明</li>
+      <li>物理 → 受力分析、电路图</li>
+      <li>化学 → 方程式配平、实验装置</li>
+      <li>英语 → 时态时间轴、句子结构图</li>
+      <li>语文 → 古诗水墨生图、文言文字词卡</li>
+    </ul>
+    <p class="hint">往下滑，看下方三个实时渲染的示例</p>`,
+  profile: `<h3>千人千面 · 记得住每个孩子</h3>
+    <ul>
+      <li><b>掌握度</b>：每个知识点学到哪、薄弱在哪</li>
+      <li><b>学习偏好</b>：爱看动画还是爱做题</li>
+      <li><b>术语水平</b>：听不懂就自动换大白话</li>
+      <li><b>错题本</b>：每道错题、错因都记着</li>
+      <li><b>情绪</b>：烦躁了就缓一缓，不硬灌</li>
+    </ul>`,
+  evolve: `<h3>越用越懂 · 老师也在进步</h3>
+    <ul>
+      <li>教学方法沉淀：<b>「用抛物线图像 + 抛球比喻，小明一次就懂了」</b></li>
+      <li>下次直接复用有效方法，避开无效方法</li>
+      <li>错因积累：知道这孩子容易在哪个点翻车</li>
+      <li>孩子越来越会学，老师越来越会教</li>
+    </ul>`,
+  extend: `<h3>可扩展 · 跟着需求一起长</h3>
+    <ul>
+      <li>想加新学科（生物 / 地理 / 历史 / 道法）→ 说一声</li>
+      <li>想加新知识点、新题型 → 说一声</li>
+      <li>想改老师语气、严格度 → 说一声</li>
+      <li>想加打卡、家长周报 → 说一声</li>
+      <li>所有扩展都是「改文件」，改完即生效</li>
+    </ul>`,
+  grade2: `<h3>拍照批改作业</h3>
+    <ul>
+      <li>AI 读图，看清题目和孩子写的答案</li>
+      <li>逐个判断对错，错题苏格拉底引导改正</li>
+      <li>自动记进错题本，标出错因</li>
+      <li>文字 / PDF 也能处理；图片最可靠</li>
+    </ul>`
+};
+const tabs = document.querySelectorAll('.tab');
+const panel = document.getElementById('panel');
+function renderPanel() { panel.innerHTML = PANELS[document.querySelector('.tab.active').dataset.t]; }
+tabs.forEach(t => t.onclick = () => { tabs.forEach(x => x.classList.remove('active')); t.classList.add('active'); renderPanel(); });
+renderPanel();
+
+// ===== 可视化 demo =====
+JXG.Options.point = Object.assign({}, JXG.Options.point, { visible: false, withLabel: false });
+JXG.Options.line = Object.assign({}, JXG.Options.line, { strokeColor: '#7a5a38', strokeWidth: 1.5 });
+JXG.Options.polygon = Object.assign({}, JXG.Options.polygon, {
+  fillOpacity: 1,
+  vertices: Object.assign({}, JXG.Options.polygon.vertices || {}, { visible: false, withLabel: false }),
+  borders: Object.assign({}, JXG.Options.polygon.borders || {}, { visible: false })
+});
+
+function renderViz(v) {
+  const box = document.getElementById('demoBox');
+  if (v === 'func') {
+    box.innerHTML = `<div class="demo-label">二次函数 y = x² · 抛物线（初三数学核心）</div><div id="viz-func" style="height:300px;"></div>`;
+    setTimeout(() => {
+      const b = JXG.JSXGraph.initBoard('viz-func', { boundingbox: [-4, 9, 4, -2], axis: true, grid: true, pan: false, zoom: false, showNavigation: false, showCopyright: false, keepaspectratio: false });
+      b.create('functiongraph', [x => x*x, -3, 3], { strokeColor: '#a8603a', strokeWidth: 3 });
+      b.create('line', [[0, 9], [0, -2]], { strokeColor: '#b8924f', strokeWidth: 1, dash: 2 });
+    }, 60);
+  } else if (v === 'buoyancy') {
+    box.innerHTML = `<div class="demo-label">浮力 · 物体受重力与浮力二力平衡（物理）</div><div id="viz-buoy" style="height:300px;"></div>`;
+    setTimeout(() => {
+      const b = JXG.JSXGraph.initBoard('viz-buoy', { boundingbox: [-4, 4.6, 4, -2.6], axis: false, grid: false, pan: false, zoom: false, showNavigation: false, showCopyright: false, keepaspectratio: false });
+      b.create('line', [[-3.6, 0], [3.6, 0]], { strokeColor: '#4f7a6b', strokeWidth: 2 });
+      b.create('text', [3.0, 0.3, '水面'], { fontSize: 13, color: '#4f7a6b' });
+      b.create('polygon', [[-1.1, 2.0], [1.1, 2.0], [1.1, -0.8], [-1.1, -0.8]], { fillColor: '#c9a06c', strokeColor: '#8b5e3c', strokeWidth: 1.5 });
+      b.create('segment', [[0, 0.6], [0, 3.2]], { strokeColor: '#2f4858', strokeWidth: 3, lastArrow: true });
+      b.create('text', [0.35, 3.35, '浮力 F浮'], { fontSize: 14, color: '#2f4858' });
+      b.create('segment', [[0, 0.6], [0, -2.0]], { strokeColor: '#b5542e', strokeWidth: 3, lastArrow: true });
+      b.create('text', [0.35, -2.2, '重力 G'], { fontSize: 14, color: '#b5542e' });
+    }, 60);
+  } else if (v === 'chem') {
+    box.innerHTML = `<div class="demo-label">化学方程式 · 配平（化学反应）</div>
+      <div style="font-size:30px; font-weight:700; letter-spacing:2px; color:#2b2926; margin:14px 0 4px;">
+        2H<sub>2</sub> + O<sub>2</sub> <span style="color:#a8603a;">—点燃→</span> 2H<sub>2</sub>O
+      </div>
+      <div style="font-size:14px; color:#7a6f63; line-height:1.9;">氢气和氧气在点燃条件下生成水 · 反应前后原子种类与个数不变（质量守恒）</div>`;
+  }
+}
+const vizTabs = document.querySelectorAll('.viz-tab');
+vizTabs.forEach(t => t.onclick = () => { vizTabs.forEach(x=>x.classList.remove('active')); t.classList.add('active'); renderViz(t.dataset.v); });
+renderViz('func');
+
+// ===== 出题演示（苏格拉底） =====
+const SCRIPT = [
+  { who: 'teacher', text: '一个木块漂在水面上，一动不动。你说，它竖直方向受几个力？' },
+  { who: 'student', text: '两个？地球往下拉它，水往上托它。' },
+  { who: 'teacher', text: '对！往下的是重力，水往上托的叫浮力。木块漂着不动，说明这两个力什么关系？' },
+  { who: 'student', text: '大小相等？' },
+  { who: 'teacher', text: '完全正确！重力向下、浮力向上、大小相等，才抵消成静止。这就是「二力平衡」。你看，不是我告诉你的，是你自己推出来的。' }
+];
+let si = 0;
+const socraticEl = document.getElementById('socratic');
+function stepSocratic() {
+  if (si >= SCRIPT.length) { si = 0; socraticEl.innerHTML = ''; }
+  const s = SCRIPT[si];
+  const m = document.createElement('div');
+  m.className = 'msg ' + s.who;
+  m.innerHTML = s.who === 'teacher'
+    ? `<span class="avatar">师</span><div class="bubble">${s.text}</div>`
+    : `<div class="bubble">${s.text}</div><span class="avatar">生</span>`;
+  socraticEl.appendChild(m);
+  socraticEl.scrollTop = socraticEl.scrollHeight;
+  si++;
+  if (si >= SCRIPT.length) document.getElementById('nextSocratic').textContent = '重新演示';
+}
+stepSocratic();
+document.getElementById('nextSocratic').onclick = stepSocratic;
+</script>
+</body>
+</html>

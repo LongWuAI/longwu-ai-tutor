@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>龙悟 · AI 家教 / 小初高 AI 虚拟学校 | Longwu AI Tutor · K12 Virtual School</title>
+<meta name="description" content="龙悟小初高AI学习工作台：家长自建、离线可用的本地AI虚拟学校（K12 AI Tutor & Virtual School）。WorkBuddy / Trae / Codex 均可打开，免费开源。A self-hosted, offline AI tutor for grades 1-12.">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; }
+:root {
+  --paper:#faf7f0; --paper2:#f5efe2; --card:#fffdf8;
+  --ink:#1f1b16; --ink2:#45403a; --sub:#6f675c; --faint:#a29885;
+  --cinnabar:#b5442c; --cinnabar-d:#93361f; --amber:#c86818; --dai:#2f4858;
+  --line:rgba(31,27,22,.14); --line-soft:rgba(31,27,22,.08);
+  --serif:"Noto Serif SC","STZhongsong","SimSun",serif;
+  --shadow:0 24px 48px -20px rgba(122,90,44,.16);
+  --shadow-lift:0 32px 60px -22px rgba(122,90,44,.26);
+  --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+html { scroll-behavior:smooth; }
+body { background:var(--paper); background-image:var(--noise); color:var(--ink); -webkit-font-smoothing:antialiased; min-height:100vh; }
+::selection { background:rgba(181,68,44,.16); }
+.wrap { max-width:1020px; margin:0 auto; padding:0 24px 70px; position:relative; z-index:1; }
+
+/* 纸面大字水印 */
+.wm { position:fixed; top:-70px; right:-40px; font-family:var(--serif); font-size:380px; line-height:1; color:var(--ink); opacity:.035; pointer-events:none; user-select:none; z-index:0; }
+
+/* 入场：错落浮现 */
+@keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+.wrap > * { animation:fadeUp .85s cubic-bezier(.16,.84,.44,1) both; }
+.wrap > *:nth-child(1) { animation-delay:.02s; }
+.wrap > *:nth-child(2) { animation-delay:.12s; }
+.wrap > *:nth-child(3) { animation-delay:.22s; }
+.wrap > *:nth-child(4) { animation-delay:.32s; }
+.wrap > *:nth-child(5) { animation-delay:.42s; }
+.wrap > *:nth-child(6) { animation-delay:.52s; }
+.wrap > *:nth-child(7) { animation-delay:.62s; }
+.wrap > *:nth-child(8) { animation-delay:.72s; }
+.wrap > *:nth-child(9) { animation-delay:.82s; }
+.wrap > *:nth-child(10) { animation-delay:.92s; }
+
+/* 印章（红底白字 · 纸质噪点） */
+.seal { width:40px; height:40px; flex:none; position:relative; overflow:hidden; background:var(--cinnabar); color:#faf7f0; font-family:var(--serif); font-size:21px; font-weight:700; border-radius:7px; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 0 1px rgba(250,247,240,.28), inset 0 0 10px rgba(64,12,0,.3), 0 3px 10px rgba(181,68,44,.26); }
+.seal::after { content:''; position:absolute; inset:0; background-image:var(--noise); opacity:.85; pointer-events:none; }
+
+/* 顶部导航 */
+.nav { display:flex; align-items:center; justify-content:space-between; padding:22px 0 18px; flex-wrap:wrap; gap:12px; border-bottom:1px solid var(--line-soft); }
+.logo { display:flex; align-items:center; gap:12px; font-family:var(--serif); font-weight:900; font-size:17px; letter-spacing:1px; }
+.nav-links { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.lang-btn { border:1px solid var(--line); background:var(--card); border-radius:5px; padding:7px 15px; font-size:12.5px; font-weight:700; letter-spacing:2px; color:var(--ink2); cursor:pointer; transition:all .22s; }
+.lang-btn:hover { border-color:rgba(181,68,44,.5); color:var(--cinnabar); }
+.lang-btn.active { background:var(--cinnabar); color:#faf7f0; border-color:var(--cinnabar); box-shadow:inset 0 0 8px rgba(64,12,0,.3), 0 3px 10px rgba(181,68,44,.3); }
+.nav a.gh { background:#26211a; color:#f5efe2; border-radius:5px; padding:8px 16px; font-size:12.5px; font-weight:700; letter-spacing:1px; text-decoration:none; transition:all .22s; }
+.nav a.gh:hover { transform:translateY(-2px); background:var(--ink); box-shadow:0 8px 18px rgba(31,27,22,.22); }
+
+/* Hero · 左文右印 不对称 */
+.hero { display:grid; grid-template-columns:minmax(0,1fr) 210px; gap:44px; align-items:center; padding:66px 0 58px; }
+.hero-main { animation:fadeUp .9s .16s cubic-bezier(.16,.84,.44,1) both; }
+.badge { display:inline-flex; align-items:center; gap:9px; padding:7px 16px; border:1px solid var(--line); background:var(--card); border-radius:4px; color:var(--dai); font-size:13px; font-weight:600; letter-spacing:.5px; margin-bottom:26px; }
+.badge::before { content:''; width:8px; height:8px; flex:none; background:var(--cinnabar); border-radius:1px; box-shadow:inset 0 0 3px rgba(64,12,0,.4); }
+.hero h1 { font-family:var(--serif); font-size:52px; line-height:1.24; font-weight:900; letter-spacing:2px; margin-bottom:14px; }
+.grad { color:var(--cinnabar); }
+.hero-sub { font-family:var(--serif); font-size:19px; color:var(--ink2); letter-spacing:1.5px; margin-bottom:20px; }
+.slogan { font-size:15px; color:var(--sub); line-height:2; max-width:620px; margin:0 0 10px; }
+.en-slogan { font-size:12px; color:var(--faint); letter-spacing:.4px; line-height:1.9; max-width:620px; margin:0 0 26px; }
+.pills { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:34px; max-width:640px; }
+.pill { padding:7px 14px; background:var(--paper2); border:1px solid var(--line-soft); border-radius:3px; font-size:12.5px; font-weight:600; color:var(--ink2); }
+.hero-cta { display:flex; gap:14px; flex-wrap:wrap; }
+.btn { padding:14px 32px; border-radius:6px; font-size:15px; font-weight:700; letter-spacing:1px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; transition:all .25s; border:none; cursor:pointer; }
+.btn-primary { background:var(--cinnabar); color:#faf7f0; box-shadow:inset 0 0 0 1px rgba(250,247,240,.22), inset 0 0 12px rgba(64,12,0,.25), 0 12px 26px -10px rgba(181,68,44,.5); }
+.btn-primary:hover { background:var(--cinnabar-d); transform:translateY(-2px); box-shadow:inset 0 0 0 1px rgba(250,247,240,.22), inset 0 0 12px rgba(64,12,0,.25), 0 18px 32px -12px rgba(181,68,44,.55); }
+.btn-ghost { background:transparent; color:var(--ink2); border:1px solid var(--line); }
+.btn-ghost:hover { border-color:var(--cinnabar); color:var(--cinnabar); transform:translateY(-2px); }
+
+/* 右侧印章装饰 */
+.hero-seal { display:flex; flex-direction:column; align-items:center; gap:20px; animation:fadeUp .9s .3s cubic-bezier(.16,.84,.44,1) both; }
+.big-seal { width:132px; height:132px; position:relative; overflow:hidden; background:var(--cinnabar); border-radius:12px; color:#faf7f0; font-family:var(--serif); font-size:42px; font-weight:900; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; transform:rotate(-2deg); box-shadow:inset 0 0 0 2px rgba(250,247,240,.3), inset 0 0 26px rgba(64,12,0,.32), 0 20px 40px -14px rgba(181,68,44,.42); }
+.big-seal::after { content:''; position:absolute; inset:0; background-image:var(--noise); opacity:.85; pointer-events:none; }
+.mini-seals { display:flex; gap:10px; }
+.mini-seals span { width:38px; height:38px; border:1.5px solid rgba(181,68,44,.7); color:var(--cinnabar); font-family:var(--serif); font-size:17px; font-weight:700; display:flex; align-items:center; justify-content:center; border-radius:5px; }
+.vtext { writing-mode:vertical-rl; font-family:var(--serif); font-size:12.5px; letter-spacing:7px; color:var(--faint); }
+
+/* 区块 */
+.section { margin-top:64px; }
+.sec-title { text-align:center; font-family:var(--serif); font-size:27px; font-weight:900; letter-spacing:2px; margin-bottom:10px; }
+.sec-no { display:inline-block; font-family:var(--serif); font-size:12px; color:var(--cinnabar); border:1px solid rgba(181,68,44,.45); border-radius:3px; padding:3px 7px; letter-spacing:2px; line-height:1; vertical-align:6px; margin-right:12px; }
+.sec-sub { text-align:center; color:var(--sub); font-size:14px; margin-bottom:8px; }
+.sec-sub.en { font-size:11.5px; color:var(--faint); letter-spacing:1px; margin-bottom:34px; }
+
+/* 三学段 · 横向大卡错落 */
+.grades { display:flex; flex-direction:column; gap:18px; }
+.gcard { display:flex; align-items:center; gap:26px; background:var(--card); border:1px solid var(--line-soft); border-radius:10px; padding:26px 30px; box-shadow:var(--shadow); text-decoration:none; color:var(--ink); transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+.gcard:nth-child(2) { width:94%; margin-left:auto; }
+.gcard:nth-child(3) { width:97%; }
+.gcard:hover { transform:translateY(-4px); border-color:rgba(181,68,44,.5); box-shadow:var(--shadow-lift); }
+.gnum { font-family:var(--serif); font-size:46px; color:var(--cinnabar); line-height:1; flex:none; align-self:center; padding-right:26px; border-right:1px solid var(--line); }
+.gbody { flex:1; min-width:0; }
+.ghead { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:5px; }
+.gcard h3 { font-family:var(--serif); font-size:20px; font-weight:900; letter-spacing:1.5px; }
+.tag { font-size:11px; font-weight:700; letter-spacing:1px; padding:3px 10px; border:1px solid rgba(181,68,44,.42); color:var(--cinnabar); border-radius:3px; }
+.gen { font-size:11.5px; color:var(--dai); letter-spacing:1.2px; margin-bottom:10px; font-weight:500; }
+.gcard p { font-size:13.5px; color:var(--sub); line-height:1.9; }
+.go { flex:none; font-size:13px; font-weight:700; color:var(--cinnabar); letter-spacing:.5px; }
+
+/* 工具兼容 */
+.tools { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; }
+.tool { background:var(--card); border:1px solid var(--line-soft); border-radius:10px; padding:28px 22px; text-align:center; box-shadow:var(--shadow); transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+.tool:hover { transform:translateY(-4px); border-color:rgba(181,68,44,.5); box-shadow:var(--shadow-lift); }
+.ticon { width:52px; height:52px; margin:0 auto 14px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:var(--serif); font-size:22px; font-weight:900; }
+.tool:nth-child(1) .ticon { background:rgba(181,68,44,.08); color:var(--cinnabar); }
+.tool:nth-child(2) .ticon { background:rgba(200,104,24,.1); color:var(--amber); }
+.tool:nth-child(3) .ticon { background:rgba(47,72,88,.08); color:var(--dai); }
+.tool h4 { font-family:var(--serif); font-size:17px; font-weight:900; letter-spacing:.5px; margin-bottom:8px; }
+.tool p { font-size:13px; color:var(--sub); line-height:1.85; }
+.ten { font-size:11px; color:var(--faint); line-height:1.7; letter-spacing:.3px; margin-top:8px; }
+
+/* 三步 */
+.steps3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:18px; }
+.step3 { background:var(--card); border:1px solid var(--line-soft); border-radius:10px; padding:30px 20px; text-align:center; box-shadow:var(--shadow); transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+.step3:hover { transform:translateY(-4px); border-color:rgba(181,68,44,.5); box-shadow:var(--shadow-lift); }
+.step3 .num { width:46px; height:46px; margin:0 auto 16px; border-radius:8px; background:var(--cinnabar); color:#faf7f0; font-family:var(--serif); font-size:19px; font-weight:700; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 0 1px rgba(250,247,240,.25), inset 0 0 9px rgba(64,12,0,.28), 0 6px 14px -6px rgba(181,68,44,.4); }
+.step3 h4 { font-family:var(--serif); font-size:17px; font-weight:900; letter-spacing:1px; margin-bottom:8px; }
+.step3 p { font-size:13px; color:var(--sub); line-height:1.8; }
+.step3 .en { font-size:11px; color:var(--faint); letter-spacing:1px; margin-top:7px; }
+
+/* 演示入口 */
+.demo-entry { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+@media (max-width:640px){ .demo-entry { grid-template-columns:1fr; } }
+.dcard { background:var(--card); border:1px solid var(--line-soft); border-radius:10px; padding:30px; box-shadow:var(--shadow); text-decoration:none; color:var(--ink); transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+.dcard:hover { transform:translateY(-4px); border-color:rgba(181,68,44,.5); box-shadow:var(--shadow-lift); }
+.dicon { width:54px; height:54px; border-radius:8px; background:rgba(181,68,44,.08); color:var(--cinnabar); font-family:var(--serif); font-size:25px; font-weight:900; display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+.dcard h3 { font-family:var(--serif); font-size:20px; font-weight:900; letter-spacing:1.5px; margin-bottom:6px; }
+.den { font-size:11.5px; color:var(--dai); letter-spacing:1.2px; margin-bottom:12px; font-weight:500; }
+.dcard p { font-size:13.5px; color:var(--sub); line-height:1.95; }
+.cta { display:inline-block; margin-top:16px; font-weight:700; font-size:14px; color:var(--cinnabar); letter-spacing:.5px; }
+
+/* 开源说明 */
+.oss { background:var(--card); border:1px solid var(--line-soft); border-radius:10px; padding:32px; box-shadow:var(--shadow); }
+.oss h3 { font-family:var(--serif); font-size:19px; font-weight:900; letter-spacing:1px; margin-bottom:12px; }
+.oss h3 .en { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; font-size:11.5px; color:var(--faint); font-weight:600; letter-spacing:1.5px; margin-left:8px; }
+.oss p, .oss li { font-size:14px; color:var(--sub); line-height:2.05; }
+.oss .en { font-size:12px; color:var(--faint); line-height:1.9; letter-spacing:.3px; margin-top:8px; }
+.oss ul { padding-left:22px; }
+
+/* 页脚 */
+.footer { text-align:center; margin-top:70px; padding-top:32px; border-top:1px solid var(--line); color:var(--sub); font-size:13px; line-height:2.1; }
+.footer .f-title { font-family:var(--serif); font-size:16px; font-weight:900; color:var(--ink); letter-spacing:1.5px; margin-bottom:10px; }
+.footer b { color:var(--ink); }
+.footer .f-links { padding-top:14px; border-top:1px solid var(--line-soft); font-size:12.5px; }
+
+/* ===== 新增区块：对比表 & FAQ 手风琴 ===== */
+.cmp-wrap { border:1px solid var(--line-soft); border-radius:10px; overflow:hidden; box-shadow:var(--shadow); background:var(--card); }
+.cmp-table { width:100%; border-collapse:collapse; }
+.cmp-table th, .cmp-table td { padding:14px 18px; font-size:13.5px; text-align:left; border-bottom:1px solid var(--line-soft); line-height:1.7; }
+.cmp-table thead th { font-family:var(--serif); background:var(--paper2); letter-spacing:1px; font-size:13px; }
+.cmp-table tbody tr:last-child td { border-bottom:none; }
+.cmp-table td:first-child { font-family:var(--serif); font-weight:900; letter-spacing:1px; white-space:nowrap; }
+.cmp-table .yes { color:var(--cinnabar); font-weight:700; }
+.cmp-table .no { color:var(--faint); }
+.cmp-table tbody tr:hover td { background:rgba(181,68,44,.03); }
+
+.faq-list { display:flex; flex-direction:column; gap:12px; }
+.faq { background:var(--card); border:1px solid var(--line-soft); border-radius:8px; box-shadow:var(--shadow); overflow:hidden; transition:border-color .25s; }
+.faq[open] { border-color:rgba(181,68,44,.45); }
+.faq summary { cursor:pointer; padding:16px 20px; font-family:var(--serif); font-weight:900; font-size:15px; letter-spacing:1px; list-style:none; display:flex; justify-content:space-between; align-items:center; gap:12px; user-select:none; }
+.faq summary::-webkit-details-marker { display:none; }
+.faq summary::after { content:'＋'; color:var(--cinnabar); font-size:15px; flex:none; }
+.faq[open] summary::after { content:'－'; }
+.faq[open] summary { color:var(--cinnabar); border-bottom:1px dashed var(--line-soft); }
+.faq .fa { padding:15px 20px; font-size:13.5px; color:var(--sub); line-height:2; }
+
+@media (max-width:760px) {
+  .hero { grid-template-columns:1fr; gap:36px; padding:48px 0 44px; }
+  .hero h1 { font-size:33px; letter-spacing:1px; }
+  .hero-sub { font-size:16px; }
+  .hero-seal { flex-direction:row; justify-content:flex-start; gap:22px; }
+  .big-seal { width:92px; height:92px; font-size:30px; gap:4px; border-radius:10px; }
+  .mini-seals { flex-direction:column; }
+  .vtext { display:none; }
+  .gcard, .gcard:nth-child(2), .gcard:nth-child(3) { width:100%; margin:0; flex-direction:column; align-items:flex-start; gap:16px; }
+  .gnum { padding:0 0 14px; border-right:none; border-bottom:1px solid var(--line); align-self:stretch; text-align:center; }
+  .go { align-self:flex-start; }
+  .sec-title { font-size:22px; }
+  .cmp-table th, .cmp-table td { padding:10px 12px; font-size:12.5px; }
+  .faq summary { padding:14px 16px; font-size:14px; }
+  .faq .fa { padding:13px 16px; font-size:12.5px; }
+}
+@media (prefers-reduced-motion: reduce) { .wrap > *, .hero-main, .hero-seal { animation:none; } }
+</style>
+</head>
+<body>
+<div class="wm" aria-hidden="true">龍</div>
+<div class="wrap">
+
+  <div class="nav">
+    <div class="logo"><span class="seal">龍</span><span data-i18n="logo">龙悟 · AI 学习工作台</span></div>
+    <div class="nav-links">
+      <a class="gh" href="https://github.com/LongWuAI/longwu-ai-tutor" target="_blank" data-i18n="ghbtn">GitHub 仓库 ⭐</a>
+      <button class="lang-btn active" id="langZh" onclick="setLang('zh')">中文</button>
+      <button class="lang-btn" id="langEn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-main">
+      <span class="badge" data-i18n="badge">🎒 小学 · 初中 · 高中（K12）· 开源设计思路 · 眼见为实</span>
+      <h1><span data-i18n="h1a">小初高</span> <span class="grad" data-i18n="h1b">AI 虚拟学校</span></h1>
+      <p class="hero-sub" data-i18n="h1c">住在你家电脑里的一所会教书的学校</p>
+      <p class="slogan" data-i18n="slogan">不是 App、不是网课、不是会员——把「老师 + 教学法 + 教具 + 题库」装进一个文件夹。<br>孩子对话里提问，AI 老师苏格拉底式引导；需要图形就把天平、数轴、函数给你"画"出来。</p>
+      <p class="en-slogan">Not an app, not a course subscription — a complete AI virtual school inside a folder. A principal plus subject teachers, offline-ready, privacy at home.</p>
+      <div class="pills">
+        <span class="pill" data-i18n="p1">🏫 一位校长 + 各科老师</span>
+        <span class="pill" data-i18n="p2">🎓 苏格拉底式讲题</span>
+        <span class="pill" data-i18n="p3">📐 可视化教具（离线库）</span>
+        <span class="pill" data-i18n="p4">👤 千人千面 · 记错题</span>
+        <span class="pill" data-i18n="p5">🔌 WorkBuddy / Trae / Codex 通用</span>
+      </div>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#grades" data-i18n="cta1">🚀 马上开始</a>
+        <a class="btn btn-ghost" href="demo/interactive-demo.html" data-i18n="cta2">🎬 看完整上课演示</a>
+      </div>
+    </div>
+    <aside class="hero-seal" aria-hidden="true">
+      <div class="big-seal"><span>龍</span><span>悟</span></div>
+      <div class="mini-seals"><span>学</span><span>思</span><span>问</span></div>
+      <div class="vtext">会教书 · 懂孩子 · 记得住</div>
+    </aside>
+  </div>
+
+  <div class="section" id="grades">
+    <div class="sec-title"><span class="sec-no">壹</span><span data-i18n="gTitle">三个学段 · 从小学一路陪到高考</span></div>
+    <div class="sec-sub" data-i18n="gSub">三个学段的产品形态 · 点进去看各自的介绍页</div>
+    <div class="sec-sub en">Each stage of the product — click to preview its landing page.</div>
+    <div class="grades">
+      <a class="gcard" href="primary-school-ai-workbench/welcome.html">
+        <div class="gnum">壹</div>
+        <div class="gbody">
+          <div class="ghead">
+            <h3 data-i18n="gH1">小学 · 小升初冲刺</h3>
+            <span class="tag" data-i18n="gT1">小学 1-6 年级</span>
+          </div>
+          <div class="gen">Primary School · Grades 1–6</div>
+          <p data-i18n="gD1">校长 + 数学/语文/英语三位老师。天平讲方程、数轴讲负数、披萨讲分数，小升初真题专项。</p>
+        </div>
+        <span class="go" data-i18n="gGo">打开小学介绍页 →</span>
+      </a>
+      <a class="gcard" href="junior-high-ai-workbench/welcome.html">
+        <div class="gnum">貳</div>
+        <div class="gbody">
+          <div class="ghead">
+            <h3 data-i18n="gH2">初中 · 初升高冲刺</h3>
+            <span class="tag" data-i18n="gT2">初一至初三</span>
+          </div>
+          <div class="gen">Junior High · Grades 7–9</div>
+          <p data-i18n="gD2">数语英 + 物理 + 化学五位老师。函数图像、受力分析、化学实验，初升高全科陪跑。</p>
+        </div>
+        <span class="go" data-i18n="gGo2">打开初中介绍页 →</span>
+      </a>
+      <a class="gcard" href="senior-high-ai-workbench/welcome.html">
+        <div class="gnum">叁</div>
+        <div class="gbody">
+          <div class="ghead">
+            <h3 data-i18n="gH3">高中 · 高考冲刺</h3>
+            <span class="tag" data-i18n="gT3">高一至高三</span>
+          </div>
+          <div class="gen">Senior High · Grades 10–12</div>
+          <p data-i18n="gD3">九科老师全员到齐，新高考/老高考双模式。导数、电场线、遗传图谱，一路陪到高考。</p>
+        </div>
+        <span class="go" data-i18n="gGo3">打开高中介绍页 →</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="section" id="tools">
+    <div class="sec-title"><span class="sec-no">貳</span><span data-i18n="tTitle">装在一个文件包里，这些 AI 工具都能开</span></div>
+    <div class="sec-sub" data-i18n="tSub">不锁定任何一家：文件放在你电脑里，用什么工具打开都行</div>
+    <div class="sec-sub en">Not locked to any vendor. The folder lives on your computer — open it with any AI assistant.</div>
+    <div class="tools">
+      <div class="tool"><div class="ticon">W</div><h4>WorkBuddy</h4><p data-i18n="t1">把文件夹当项目打开，跟 AI 说「开始学习」，孩子就能在对话里上课。</p><div class="ten">Open the folder as a project, say "Let's study", class begins in chat.</div></div>
+      <div class="tool"><div class="ticon">T</div><h4>Trae</h4><p data-i18n="t2">同样三步：解压 → 打开文件夹 → 说「开始学习」。零配置，即开即用。</p><div class="ten">Unzip → open folder → say "Start studying". Zero configuration.</div></div>
+      <div class="tool"><div class="ticon">C</div><h4>Codex</h4><p data-i18n="t3">开发者家长的顺手选择，同一个文件夹直接打开，老师立刻上岗。</p><div class="ten">The same folder opens directly — teachers are ready instantly.</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title"><span class="sec-no">叁</span><span data-i18n="sTitle">三步上手 · 从思路到你的产品</span></div>
+    <div class="sec-sub" data-i18n="sSub">面向开发者：思路全公开，演示在线看，方向任你选</div>
+    <div class="sec-sub en">For developers: concepts open, demos online, direction yours.</div>
+    <div class="steps3">
+      <div class="step3"><div class="num">壹</div><h4 data-i18n="s1h">读思路</h4><p data-i18n="s1p">README 六大设计理念：对话即课堂、展示互动分层、画像记忆……</p><div class="en">Read the six core concepts</div></div>
+      <div class="step3"><div class="num">貳</div><h4 data-i18n="s2h">看演示</h4><p data-i18n="s2p">在线体验完整上课流程与学习报告，零安装零配置</p><div class="en">Try the online demos</div></div>
+      <div class="step3"><div class="num">叁</div><h4 data-i18n="s3h">动手构建</h4><p data-i18n="s3p">应用方向或智能体方向，基于这套思路做出你的版本</p><div class="en">Build your own version</div></div>
+    </div>
+  </div>
+
+  <div class="section" id="demo">
+    <div class="sec-title"><span class="sec-no">肆</span><span data-i18n="dTitle">眼见为实 · 免费在线演示</span></div>
+    <div class="sec-sub" data-i18n="dSub">不下载也能体验：点开就能模拟一节课、看一份学习报告</div>
+    <div class="sec-sub en">Try before download — a simulated lesson and a sample report.</div>
+    <div class="demo-entry">
+      <a class="dcard" href="demo/interactive-demo.html">
+        <div class="dicon">课</div>
+        <h3 data-i18n="dH1">模拟完整上课流程</h3>
+        <div class="den">Interactive Demo · A full lesson</div>
+        <p data-i18n="dD1">入学测评 → 苏格拉底式讲题（一步一步引导，不直接给答案）→ 错题自动记本 → 下课生成报告。点一点，就像真的上了一节课。</p>
+        <span class="cta" data-i18n="dCta">开始体验 →</span>
+      </a>
+      <a class="dcard" href="demo/report-demo.html">
+        <div class="dicon">卷</div>
+        <h3 data-i18n="dH2">孩子学习报告示例</h3>
+        <div class="den">Sample Report · For parents</div>
+        <p data-i18n="dD2">学情的总结、每个知识点的掌握度、错题回顾、老师给孩子的建议、给家长的话——一键生成，家长看得明明白白。</p>
+        <span class="cta" data-i18n="dCta2">查看示例报告 →</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="section" id="compare">
+    <div class="sec-title"><span class="sec-no">伍</span><span data-i18n="cmpTitle">和网课 / 题库 App 的区别</span></div>
+    <div class="sec-sub" data-i18n="cmpSub">同样的时间，换一种更聪明的花法</div>
+    <div class="sec-sub en">Same hours, spent a smarter way.</div>
+    <div class="cmp-wrap">
+      <table class="cmp-table">
+        <thead>
+          <tr><th data-i18n="cmpH1">维度</th><th class="yes" data-i18n="cmpH2">龙悟 AI 学校</th><th class="no" data-i18n="cmpH3">网课 / 题库 App</th></tr>
+        </thead>
+        <tbody>
+          <tr><td data-i18n="cmpR1">费用</td><td class="yes" data-i18n="cmpR1a">一次拥有，无需订阅</td><td class="no" data-i18n="cmpR1b">按年订阅 / 会员制</td></tr>
+          <tr><td data-i18n="cmpR2">隐私</td><td class="yes" data-i18n="cmpR2a">数据留在自家电脑</td><td class="no" data-i18n="cmpR2b">学习记录上传云端</td></tr>
+          <tr><td data-i18n="cmpR3">千人千面</td><td class="yes" data-i18n="cmpR3a">每个孩子独立画像，按薄弱点教</td><td class="no" data-i18n="cmpR3b">统一课程，统一进度</td></tr>
+          <tr><td data-i18n="cmpR4">离线</td><td class="yes" data-i18n="cmpR4a">完全离线可用</td><td class="no" data-i18n="cmpR4b">断网即停</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section" id="faq">
+    <div class="sec-title"><span class="sec-no">陆</span><span data-i18n="faqTitle">常见问题</span></div>
+    <div class="sec-sub" data-i18n="faqSub">家长问得最多的四个问题</div>
+    <div class="sec-sub en">The four questions parents ask most.</div>
+    <div class="faq-list">
+      <details class="faq">
+        <summary data-i18n="faqQ1">真的免费吗？</summary>
+        <div class="fa" data-i18n="faqA1">设计思路文档 MIT 开源，任何人可免费参考、实现。完整可运行的版本、深度题库、画像精调等在正式版。</div>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faqQ2">需要会编程吗？</summary>
+        <div class="fa" data-i18n="faqA2">正式版完全不需要：拿到文件夹 → 用 WorkBuddy / Trae / Codex 打开 → 对孩子说「开始学习」。剩下的交给老师。</div>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faqQ3">孩子的数据安全吗？</summary>
+        <div class="fa" data-i18n="faqA3">所有学习数据（画像、错题、掌握度）只保存在自家电脑的 profile/ 文件夹里，不上传、不联网、不分析。换电脑时拷走文件夹即可。</div>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faqQ4">和网课有什么区别？</summary>
+        <div class="fa" data-i18n="faqA4">网课是录好的统一内容，龙悟是一对一现场教学：苏格拉底式引导不给现成答案、记得住孩子的错题和情绪、按薄弱点动态出题。</div>
+      </details>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="oss">
+      <h3>🔓 <span data-i18n="oH">开源说明</span> <span class="en">Open Source · MIT</span></h3>
+      <ul>
+        <li data-i18n="o1">设计思路文档采用 MIT 规则：任何人可免费参考、实现、分发。</li>
+        <li data-i18n="o2">本仓库为设计思路文档（六大理念 + 静态演示）；完整实现、深度题库、画像精调在正式版。</li>
+        <li data-i18n="o3">题库等深度内容版权归龙悟所有，商用请先联系授权。</li>
+      </ul>
+      <p class="en">The design concepts are MIT-licensed — free to reference, implement and distribute. This repo contains the open design document (six core ideas + static demos); the full implementation, deep question bank and profile fine-tuning ship with the official edition. Deep content © Longwu, commercial use requires authorization.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="f-title" data-i18n="fH">关注龙悟 · 获取更多 AI 内容</div>
+    <div style="margin-bottom:6px;font-size:14px;" data-i18n="f1">🎒 <b>龙悟AI创业</b>（抖音 / 小红书 / 视频号）— 青少年教育 · 学习工作台 · 智能体开发</div>
+    <div style="margin-bottom:16px;font-size:14px;color:var(--sub);" data-i18n="f2">🚀 <b>龙悟IP智能体</b>（抖音 / 小红书 / 视频号）— 企业 AI 化改造 · 个人 IP 创业</div>
+    <div class="f-links" data-i18n="f3">龙悟 · 小初高 AI 虚拟学校 · 孩子学到的数据保存在自家电脑 profile/ 里，隐私留在家。<br><span style="color:#a29885;">Children's learning data stays in your local profile/ folder — privacy at home.</span></div>
+  </div>
+</div>
+
+<script>
+const I18N = {
+zh: {
+  logo:"龙悟 · AI 学习工作台", ghbtn:"GitHub 仓库 ⭐",
+  badge:"🎒 小学 · 初中 · 高中（K12）· 开源设计思路 · 眼见为实",
+  h1a:"小初高", h1b:"AI 虚拟学校", h1c:"住在你家电脑里的一所会教书的学校",
+  slogan:"不是 App、不是网课、不是会员——把「老师 + 教学法 + 教具 + 题库」装进一个文件夹。<br>孩子对话里提问，AI 老师苏格拉底式引导；需要图形就把天平、数轴、函数给你\"画\"出来。",
+  p1:"🏫 一位校长 + 各科老师", p2:"🎓 苏格拉底式讲题", p3:"📐 可视化教具（离线库）", p4:"👤 千人千面 · 记错题", p5:"🔌 WorkBuddy / Trae / Codex 通用",
+  cta1:"🚀 马上开始", cta2:"🎬 看完整上课演示",
+  scTitle:"龙悟虚拟学校", scSub:"校长 + 老师 · 教室永远在线",
+  b1:"先不告诉你答案…", b2:"这句诗要\"看见\"画面", b3:"跟我读：e-le-phant", b4:"今天学 25 分钟刚刚好",
+  gTitle:"三个学段 · 从小学一路陪到高考", gSub:"三个学段的产品形态 · 点进去看各自的介绍页",
+  gT1:"小学 1-6 年级", gH1:"小学 · 小升初冲刺", gD1:"校长 + 数学/语文/英语三位老师。天平讲方程、数轴讲负数、披萨讲分数，小升初真题专项。", gGo:"打开小学介绍页 →",
+  gT2:"初一至初三", gH2:"初中 · 初升高冲刺", gD2:"数语英 + 物理 + 化学五位老师。函数图像、受力分析、化学实验，初升高全科陪跑。", gGo2:"打开初中介绍页 →",
+  gT3:"高一至高三", gH3:"高中 · 高考冲刺", gD3:"九科老师全员到齐，新高考/老高考双模式。导数、电场线、遗传图谱，一路陪到高考。", gGo3:"打开高中介绍页 →",
+  tTitle:"装在一个文件包里，这些 AI 工具都能开", tSub:"不锁定任何一家：文件放在你电脑里，用什么工具打开都行",
+  t1:"把文件夹当项目打开，跟 AI 说「开始学习」，孩子就能在对话里上课。",
+  t2:"同样三步：解压 → 打开文件夹 → 说「开始学习」。零配置，即开即用。",
+  t3:"开发者家长的顺手选择，同一个文件夹直接打开，老师立刻上岗。",
+  sTitle:"三步上手 · 从思路到你的产品", sSub:"面向开发者：思路全公开，演示在线看，方向任你选",
+  s1h:"读思路", s1p:"README 六大设计理念：对话即课堂、展示互动分层、画像记忆……",
+  s2h:"看演示", s2p:"在线体验完整上课流程与学习报告，零安装零配置",
+  s3h:"动手构建", s3p:"应用方向或智能体方向，基于这套思路做出你的版本",
+  dTitle:"眼见为实 · 免费在线演示", dSub:"不下载也能体验：点开就能模拟一节课、看一份学习报告",
+  dH1:"模拟完整上课流程", dD1:"入学测评 → 苏格拉底式讲题（一步一步引导，不直接给答案）→ 错题自动记本 → 下课生成报告。点一点，就像真的上了一节课。", dCta:"开始体验 →",
+  dH2:"孩子学习报告示例", dD2:"学情总结、每个知识点的掌握度、错题回顾、老师给孩子的建议、给家长的话——一键生成，家长看得明明白白。", dCta2:"查看示例报告 →",
+  cmpTitle:"和网课 / 题库 App 的区别", cmpSub:"同样的时间，换一种更聪明的花法",
+  cmpH1:"维度", cmpH2:"龙悟 AI 学校", cmpH3:"网课 / 题库 App",
+  cmpR1:"费用", cmpR1a:"一次拥有，无需订阅", cmpR1b:"按年订阅 / 会员制",
+  cmpR2:"隐私", cmpR2a:"数据留在自家电脑", cmpR2b:"学习记录上传云端",
+  cmpR3:"千人千面", cmpR3a:"每个孩子独立画像，按薄弱点教", cmpR3b:"统一课程，统一进度",
+  cmpR4:"离线", cmpR4a:"完全离线可用", cmpR4b:"断网即停",
+  faqTitle:"常见问题", faqSub:"家长问得最多的四个问题",
+  faqQ1:"真的免费吗？", faqA1:"设计思路文档 MIT 开源，任何人可免费参考、实现。完整可运行的版本、深度题库、画像精调等在正式版。",
+  faqQ2:"需要会编程吗？", faqA2:"正式版完全不需要：拿到文件夹 → 用 WorkBuddy / Trae / Codex 打开 → 对孩子说「开始学习」。剩下的交给老师。",
+  faqQ3:"孩子的数据安全吗？", faqA3:"所有学习数据（画像、错题、掌握度）只保存在自家电脑的 profile/ 文件夹里，不上传、不联网、不分析。换电脑时拷走文件夹即可。",
+  faqQ4:"和网课有什么区别？", faqA4:"网课是录好的统一内容，龙悟是一对一现场教学：苏格拉底式引导不给现成答案、记得住孩子的错题和情绪、按薄弱点动态出题。",
+  oH:"开源说明", o1:"设计思路文档采用 MIT 规则：任何人可免费参考、实现、分发。", o2:"本仓库为设计思路文档（六大理念 + 静态演示）；完整实现、深度题库、画像精调在正式版。", o3:"题库等深度内容版权归龙悟所有，商用请先联系授权。",
+  fH:"关注龙悟 · 获取更多 AI 内容",
+  f1:"🎒 <b>龙悟AI创业</b>（抖音 / 小红书 / 视频号）— 青少年教育 · 学习工作台 · 智能体开发",
+  f2:"🚀 <b>龙悟IP智能体</b>（抖音 / 小红书 / 视频号）— 企业 AI 化改造 · 个人 IP 创业",
+  f3:"龙悟 · 小初高 AI 虚拟学校 · 孩子学到的数据保存在自家电脑 profile/ 里，隐私留在家。<br><span style=\"color:#9ca3af;\">Children's learning data stays in your local profile/ folder — privacy at home.</span>"
+},
+en: {
+  logo:"Longwu · AI Study Workspace", ghbtn:"GitHub Repo ⭐",
+  badge:"🎒 Grades 1–12 (K12) · Open Design Concepts · See It Live",
+  h1a:"K12", h1b:"AI Virtual School", h1c:"A real teaching school living in your home computer",
+  slogan:"No app, no online course, no subscription — a complete \"teachers + pedagogy + visual aids + question bank\" inside one folder.<br>Children ask in chat, the AI teacher guides them Socratically, and draws scales, number lines and graphs when needed.",
+  p1:"🏫 One principal + subject teachers", p2:"🎓 Socratic tutoring", p3:"📐 Visual teaching aids (offline)", p4:"👤 Personal profiles · mistake notebook", p5:"🔌 Works with WorkBuddy / Trae / Codex",
+  cta1:"🚀 Get Started", cta2:"🎬 Watch a Full Lesson Demo",
+  scTitle:"Longwu Virtual School", scSub:"Principal & teachers · classroom always online",
+  b1:"I won't tell you the answer…", b2:"Picture the poem in your mind", b3:"Read after me: e-le-phant", b4:"25 minutes today is perfect",
+  gTitle:"Three stages · from Grade 1 to Gaokao", gSub:"Each stage of the product — click to preview its landing page",
+  gT1:"Grades 1–6", gH1:"Primary · Exam Prep", gD1:"Principal + Math/Chinese/English teachers. Balance for equations, number line for negatives, pizza for fractions, entrance-exam drills.", gGo:"Open primary landing page →",
+  gT2:"Grades 7–9", gH2:"Junior High · Exam Prep", gD2:"Math, Chinese, English + Physics & Chemistry. Function graphs, force diagrams, chemical experiments — full support to senior high.", gGo2:"Open junior page →",
+  gT3:"Grades 10–12", gH3:"Senior High · Gaokao", gD3:"All nine subject teachers, new/old Gaokao modes. Derivatives, electric fields, genetics — all the way to the exam.", gGo3:"Open senior page →",
+  tTitle:"One file pack — open it with any AI assistant", tSub:"Not locked to any vendor. Files stay on your computer.",
+  t1:"Open the folder as a project, say \"Let's study\", and the class begins in chat.",
+  t2:"Same three steps: unzip → open the folder → say \"Start studying\". Zero configuration.",
+  t3:"The natural choice for developer parents — open the same folder, teachers come online instantly.",
+  sTitle:"Three steps · from concepts to your product", sSub:"For developers: concepts open, demos online, direction yours",
+  s1h:"Read", s1p:"Six core concepts in the README: conversation as classroom, display/interaction separation, persistent profile…",
+  s2h:"Watch", s2p:"Try the full lesson flow and sample report online — zero install",
+  s3h:"Build", s3p:"App direction or agent direction — build your own version on these ideas",
+  dTitle:"See it live · free online demo", dSub:"No download needed — simulate a lesson and preview a report",
+  dH1:"Simulate a Full Lesson", dD1:"Onboarding assessment → Socratic tutoring (guided step by step, no direct answers) → mistakes auto-saved → lesson report. Click through a real class experience.", dCta:"Try the demo →",
+  dH2:"Sample Student Report", dD2:"Learning summary, mastery per topic, mistake review, advice for the child — and a note for parents. Clear at a glance.", dCta2:"View sample report →",
+  cmpTitle:"How it differs from online courses & apps", cmpSub:"Same hours, spent a smarter way",
+  cmpH1:"Dimension", cmpH2:"Longwu AI School", cmpH3:"Online courses / drill apps",
+  cmpR1:"Cost", cmpR1a:"Yours forever, no subscription", cmpR1b:"Annual subscription / membership",
+  cmpR2:"Privacy", cmpR2a:"Data stays on your computer", cmpR2b:"Records uploaded to the cloud",
+  cmpR3:"Personalization", cmpR3a:"Individual profile, teaches weak points", cmpR3b:"One course, one pace for all",
+  cmpR4:"Offline", cmpR4a:"Fully offline", cmpR4b:"Stops without internet",
+  faqTitle:"FAQ", faqSub:"The four questions parents ask most",
+  faqQ1:"Is it really free?", faqA1:"The design document is MIT-licensed — free to reference and implement. The full runnable version, deep question bank and profile fine-tuning ship with the official edition.",
+  faqQ2:"Do I need to code?", faqA2:"Not with the official edition: get the folder → open it with WorkBuddy / Trae / Codex → say \"Start studying\". The teachers handle the rest.",
+  faqQ3:"Is my child's data safe?", faqA3:"All learning data (profile, mistakes, mastery) stays in your local profile/ folder — nothing is uploaded or analyzed. Moving computers? Just copy the folder.",
+  faqQ4:"How is it different from online courses?", faqA4:"Online courses are pre-recorded and uniform. Longwu teaches live, one-on-one: Socratic guidance without spoon-fed answers, remembers mistakes and moods, and generates questions from weak points.",
+  oH:"Open Source", o1:"The design document is under MIT: free to reference, implement and distribute.", o2:"This repo contains the open design document (six core ideas + static demos); the full implementation, deep question bank and profile fine-tuning are in the official edition.", o3:"Deep content © Longwu — commercial use requires authorization.",
+  fH:"Follow Longwu for more AI content",
+  f1:"🎒 <b>Longwu AI Startup</b> (Douyin / RED / Channels) — youth education & AI agents",
+  f2:"🚀 <b>Longwu IP Agents</b> (Douyin / RED / Channels) — enterprise AI & personal IP",
+  f3:"Longwu · K12 AI Virtual School · Children's data stays in your local profile/ folder — privacy at home.<br><span style=\"color:#9ca3af;\">数据留在自家电脑，隐私不外传。</span>"
+}
+};
+function setLang(lang){
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = I18N[lang][el.dataset.i18n]; });
+  document.getElementById('langZh').classList.toggle('active', lang==='zh');
+  document.getElementById('langEn').classList.toggle('active', lang==='en');
+  document.documentElement.lang = lang==='zh' ? 'zh-CN' : 'en';
+  try { localStorage.setItem('longwu-lang', lang); } catch(e){}
+}
+const saved = (()=>{ try { return localStorage.getItem('longwu-lang'); } catch(e){ return null; } })();
+setLang(saved === 'en' ? 'en' : 'zh');
+</script>
+</body>
+</html>

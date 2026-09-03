@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>龙悟 · WorkBuddy高中生AI学习工作台 · 覆盖高一至高三 + 高考冲刺</title>
+<!-- 本地库（离线可用） -->
+<link rel="stylesheet" href="components/math/lib/katex.min.css">
+<script defer src="components/math/lib/katex.min.js"></script>
+<script defer src="components/math/lib/auto-render.min.js"></script>
+<script src="components/math/lib/jsxgraphcore.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif; }
+:root {
+  --ink: #2a2d33;        /* 深墨 */
+  --sub: #83888f;        /* 次级 */
+  --blue: #3d5a7a;       /* 冷蓝 · 骨架 */
+  --blue-deep: #2c4663;
+  --amber: #b8893f;      /* 暖琥珀 · 强调 */
+  --cinnabar: #a9554d;   /* 朱砂 · 印章点缀 */
+  --line: #e2dccf;       /* 浅米边框 */
+  --paper: #f5f2eb;      /* 宣纸 */
+}
+html { scroll-behavior: smooth; }
+body {
+  background: linear-gradient(165deg, #eef1f5 0%, #f8f5ee 45%, #edf1ee 100%);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+.wrap { max-width: 900px; margin: 0 auto; padding: 0 20px 60px; }
+
+/* 衬线标题（国风感） */
+.serif { font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif; }
+.grad { background: linear-gradient(120deg, var(--blue-deep), var(--blue), var(--amber)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* ===== Hero ===== */
+.hero { text-align: center; padding: 60px 20px 40px; position: relative; }
+.brand-seal { position: absolute; top: 34px; left: 8%; width: 46px; height: 46px; border: 2px solid var(--cinnabar);
+  color: var(--cinnabar); font-family: "Noto Serif SC","Songti SC",serif; font-size: 24px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; border-radius: 6px; opacity: .9; }
+.rule { width: 60px; height: 4px; margin: 18px auto 0; border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--amber), transparent); }
+.badge { display: inline-block; padding: 8px 20px; border: 1px solid var(--line); background: #fffdf9;
+  color: var(--blue-deep); font-size: 13px; font-weight: 600; letter-spacing: 2px; border-radius: 4px; }
+.hero h1 { font-size: 40px; margin: 22px 0 12px; line-height: 1.3; font-weight: 900; letter-spacing: 2px; }
+.hero .slogan { font-size: 16px; color: var(--sub); line-height: 2; letter-spacing: .5px; }
+.hero .slogan b { color: var(--ink); }
+.hero .pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 28px; }
+.pill { padding: 10px 18px; border-radius: 4px; background: #fffdf9; font-size: 14px; font-weight: 500;
+  border: 1px solid var(--line); color: var(--ink); transition: all .25s; letter-spacing: .5px; }
+.pill:hover { transform: translateY(-2px); border-color: var(--amber); color: var(--amber); box-shadow: 0 6px 16px rgba(184,137,63,.12); }
+
+/* ===== 区块 ===== */
+.section { margin-top: 56px; }
+.section-title { text-align: center; font-size: 27px; font-weight: 800; margin-bottom: 10px; letter-spacing: 3px; }
+.section-sub { text-align: center; color: var(--sub); font-size: 14px; margin-bottom: 30px; letter-spacing: 1px; }
+
+/* ===== 痛点 ===== */
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 14px; }
+.pain { background: #fffdf9; border-radius: 12px; padding: 26px 20px; text-align: center;
+  border: 1px solid var(--line); transition: all .25s; }
+.pain:hover { transform: translateY(-4px); border-color: var(--amber); box-shadow: 0 10px 24px rgba(184,137,63,.1); }
+.seal { width: 44px; height: 44px; margin: 0 auto 14px; border: 2px solid var(--cinnabar);
+  color: var(--cinnabar); font-family: "Noto Serif SC","Songti SC",serif; font-size: 20px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; border-radius: 6px; }
+.pain h3 { font-size: 16px; margin-bottom: 8px; font-weight: 700; }
+.pain p { font-size: 13px; color: var(--sub); line-height: 1.75; }
+
+/* ===== 能力 tab ===== */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 22px; }
+.tab { padding: 11px 20px; border-radius: 4px; background: #fffdf9; border: 1px solid var(--line);
+  cursor: pointer; font-size: 14px; font-weight: 600; color: var(--ink); transition: all .2s; letter-spacing: 1px; }
+.tab.active { background: var(--blue-deep); color: #fff; border-color: var(--blue-deep); box-shadow: 0 6px 16px rgba(44,70,99,.2); }
+.tab:hover:not(.active) { border-color: var(--blue); }
+.panel { background: #fffdf9; border-radius: 12px; padding: 32px; min-height: 160px;
+  border: 1px solid var(--line); animation: fade .3s; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.panel h3 { font-size: 19px; margin-bottom: 14px; font-weight: 800; letter-spacing: 1px; }
+.panel p, .panel li { font-size: 15px; color: var(--sub); line-height: 2; }
+.panel ul { padding-left: 4px; list-style: none; }
+.panel li { position: relative; padding-left: 18px; }
+.panel li::before { content: ""; position: absolute; left: 0; top: 13px; width: 6px; height: 6px; background: var(--amber); border-radius: 1px; }
+.panel li b { color: var(--ink); }
+.panel .hint { margin-top: 12px; color: var(--blue-deep); font-weight: 600; }
+
+/* ===== 可视化 demo ===== */
+.viz-header { display: flex; gap: 8px; justify-content: center; margin-top: 36px; margin-bottom: 20px; }
+.viz-tab { padding: 10px 20px; border-radius: 4px; background: #fffdf9; border: 1px solid var(--line);
+  cursor: pointer; font-size: 14px; font-weight: 600; color: var(--ink); transition: all .2s; letter-spacing: 1px; }
+.viz-tab.active { background: var(--amber); color: #fff; border-color: var(--amber); box-shadow: 0 6px 16px rgba(184,137,63,.25); }
+.demo-box { background: #fffdf9; border-radius: 12px; padding: 26px; text-align: center; border: 1px solid var(--line); }
+.demo-box .demo-label { font-size: 13px; color: var(--blue-deep); font-weight: 700; margin-bottom: 12px; letter-spacing: 1px; }
+
+/* ===== 苏格拉底 ===== */
+.chat-demo { background: #fffdf9; border-radius: 12px; padding: 26px; max-width: 620px; margin: 0 auto; border: 1px solid var(--line); }
+.msg { display: flex; gap: 10px; margin-bottom: 14px; align-items: flex-start; }
+.msg.teacher { justify-content: flex-start; }
+.msg.student { justify-content: flex-end; }
+.msg .tag { flex-shrink: 0; width: 22px; height: 22px; border-radius: 4px; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.msg.teacher .tag { background: var(--blue-deep); color: #fff; }
+.msg.student { flex-direction: row-reverse; }
+.msg.student .tag { background: var(--amber); color: #fff; }
+.msg .bubble { padding: 12px 16px; border-radius: 8px; font-size: 15px; line-height: 1.8; max-width: 82%; }
+.msg.teacher .bubble { background: #eef2f6; border: 1px solid #dfe6ec; }
+.msg.student .bubble { background: #f3eadb; border: 1px solid #e7dcc4; }
+.socratic-ctl { text-align: center; margin-top: 10px; }
+.next-btn { padding: 12px 32px; border: none; border-radius: 4px; background: var(--blue-deep);
+  color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: all .2s; letter-spacing: 2px; box-shadow: 0 6px 16px rgba(44,70,99,.22); }
+.next-btn:hover { transform: translateY(-2px); background: var(--blue); }
+
+/* ===== 三步 ===== */
+.steps3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+.step3 { background: #fffdf9; border-radius: 12px; padding: 28px 20px; text-align: center; border: 1px solid var(--line); transition: all .25s; }
+.step3:hover { transform: translateY(-4px); border-color: var(--amber); }
+.step3 .num { width: 46px; height: 46px; margin: 0 auto 14px; border-radius: 50%; color: #fff; font-size: 20px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; }
+.step3 h4 { font-size: 16px; margin-bottom: 8px; font-weight: 700; }
+.step3 p { font-size: 13px; color: var(--sub); line-height: 1.7; }
+
+.footer { text-align: center; margin-top: 60px; padding-top: 26px; border-top: 1px solid var(--line); color: var(--sub); font-size: 13px; line-height: 2; letter-spacing: 1px; }
+@media (max-width: 600px) { .hero h1 { font-size: 28px; } .grad { -webkit-text-fill-color: var(--blue-deep); } .brand-seal { left: 4%; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="brand-seal">龍</div>
+    <span class="badge">高一至高三 · 高考冲刺 · 一个会教书的文件夹</span>
+    <h1 class="serif">龙悟 · WorkBuddy<br><span class="grad">高中生AI学习工作台</span></h1>
+    <p class="slogan">一个<b>会教书、懂学生、记得住</b>的 AI 虚拟学校，住在你家的文件夹里。<br>高一到高三，九科全陪 · 选科规划 · 高考冲刺 · 解压即用 · 离线可用 · 隐私留在家。</p>
+    <div class="rule"></div>
+    <p style="font-size:13px;color:var(--ink);margin-top:6px;opacity:.85;">📱 抖音 / 小红书 / 视频号 搜「<b>龙悟AI创业</b>」，看真实功能演示</p>
+    <div class="pills">
+      <span class="pill">一位校长 · 九科老师</span>
+      <span class="pill">3+1+2 选科规划</span>
+      <span class="pill">高考冲刺规划</span>
+      <span class="pill">可视化教学</span>
+      <span class="pill">千人千面</span>
+      <span class="pill">越用越懂</span>
+      <span class="pill">可扩展升级</span>
+    </div>
+  </div>
+
+  <!-- 痛点 -->
+  <div class="section">
+    <div class="section-title serif">解决这些<span class="grad">老大难</span></div>
+    <div class="section-sub">从高一一路陪到高考，家长不累、学生不慌</div>
+    <div class="pain-grid">
+      <div class="pain"><div class="seal">选</div><h3>不知道怎么选科</h3><p>3+1+2 选错影响专业，选科教练用数据帮你定组合。</p></div>
+      <div class="pain"><div class="seal">科</div><h3>九科压力大</h3><p>9 科老师各就位，错题拍照批改、讲错因、自动记错题本。</p></div>
+      <div class="pain"><div class="seal">惑</div><h3>大班课跟不上</h3><p>读画像，千人千面，从你实际水平出发，不空讲。</p></div>
+      <div class="pain"><div class="seal">虑</div><h3>高考焦虑内耗</h3><p>心理老师疏导压力，校长及时叫停过量刷题。</p></div>
+      <div class="pain"><div class="seal">志</div><h3>志愿不知道怎么填</h3><p>志愿教练定位位次，冲稳保梯度，分数变好去处。</p></div>
+    </div>
+  </div>
+
+  <!-- 能力 tab -->
+  <div class="section">
+    <div class="section-title serif">它能<span class="grad">做什么</span></div>
+    <div class="section-sub">点下面的卡片看看</div>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-t="school">虚拟学校</button>
+      <button class="tab" data-t="grade">全年级</button>
+      <button class="tab" data-t="subject">选科规划</button>
+      <button class="tab" data-t="visual">可视化教学</button>
+      <button class="tab" data-t="profile">千人千面</button>
+      <button class="tab" data-t="plan">高考冲刺</button>
+      <button class="tab" data-t="college">志愿填报</button>
+    </div>
+    <div class="panel" id="panel"></div>
+  </div>
+
+  <!-- 可视化 demo -->
+  <div class="section">
+    <div class="section-title serif">眼见为实 · <span class="grad">真实可视化</span></div>
+    <div class="section-sub">这些不是截图，是浏览器里实时渲染的精确图形</div>
+    <div class="viz-header">
+      <button class="viz-tab active" data-v="tangent">导数切线</button>
+      <button class="viz-tab" data-v="conic">圆锥曲线</button>
+      <button class="viz-tab" data-v="formula">公式</button>
+    </div>
+    <div class="demo-box" id="demoBox"></div>
+  </div>
+
+  <!-- 出题演示 -->
+  <div class="section">
+    <div class="section-title serif">出题效果 · <span class="grad">苏格拉底引导</span></div>
+    <div class="section-sub">不直接报答案，一步步问，让学生自己想出来</div>
+    <div class="chat-demo">
+      <div id="socratic"></div>
+      <div class="socratic-ctl"><button class="next-btn" id="nextSocratic">下一步</button></div>
+    </div>
+  </div>
+
+  <!-- 三步 -->
+  <div class="section">
+    <div class="section-title serif">怎么<span class="grad">开始用</span></div>
+    <div class="section-sub">三步，不用安装、不用登录、不用配 API</div>
+    <div class="steps3">
+      <div class="step3"><div class="num" style="background:var(--blue-deep);">壹</div><h4>解压文件夹</h4><p>解压到任意盘（不碰 C 盘）</p></div>
+      <div class="step3"><div class="num" style="background:var(--amber);">贰</div><h4>WorkBuddy 打开</h4><p>用 WorkBuddy / Trae / Codex 打开文件夹</p></div>
+      <div class="step3"><div class="num" style="background:var(--cinnabar);">叁</div><h4>对话里开始学</h4><p>说句"开始学习"，AI 老师就来啦</p></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div style="font-size:16px;font-weight:900;color:var(--ink);margin-bottom:12px;">关注龙悟 · 获取更多 AI 内容</div>
+    <div style="margin-bottom:8px;font-size:14px;">🎒 <b>龙悟AI创业</b>（抖音 / 小红书 / 视频号）— 青少年教育 · 学习工作台 · 智能体开发</div>
+    <div style="margin-bottom:14px;font-size:14px;">🚀 <b>龙悟IP智能体</b>（抖音 / 小红书 / 视频号）— 企业 AI 化改造 · 个人 IP 创业 · 智能体开发</div>
+    <div style="margin-top:18px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:13px;">
+      龙悟 · WorkBuddy高中生AI学习工作台 · 覆盖高一至高三 + 高考冲刺<br>
+      学生学到的数据保存在本文件夹 profile/ 里，隐私留在你家电脑
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 能力面板内容 =====
+const PANELS = {
+  school: `<h3>一所完整的虚拟学校</h3>
+    <p>打开文件夹，你就拥有了一所 AI 高中：</p>
+    <ul>
+      <li><b>校长</b>：入学测评、选科规划、高考冲刺规划、目标院校追踪</li>
+      <li><b>语数英</b>：导数与圆锥曲线、文言文与议论文、长难句与读后续写</li>
+      <li><b>物化生</b>：电磁学、有机化学、遗传与进化</li>
+      <li><b>史政地</b>：中外通史、哲学与经济、自然与人文地理</li>
+      <li><b>教师办公室</b>：一个老师主讲，其他老师静默观察、递建议</li>
+    </ul>`,
+  grade: `<h3>高一到高三，一路陪到高考</h3>
+    <ul>
+      <li><b>高一</b>：打牢基础——函数、力学、物质的量，同步探索选科方向</li>
+      <li><b>高二</b>：分科深化——导数、电磁学、有机化学、遗传</li>
+      <li><b>高三</b>：一轮二轮三轮复习，分省真题 + 限时训练</li>
+      <li><b>高考冲刺</b>：校长按本省分值权重定计划，真题优先</li>
+      <li><b>知识点连贯</b>：同一套体系，难度随年级递进，不断层</li>
+    </ul>`,
+  subject: `<h3>选科规划 · 3+1+2 不踩坑</h3>
+    <ul>
+      <li><b>看学科能力</b>：读画像各科掌握度，摸清强科弱科</li>
+      <li><b>看兴趣专业</b>：想学什么、未来做什么</li>
+      <li><b>看赋分竞争</b>：赋分看排名，优先选排名靠前的科目</li>
+      <li><b>看专业要求</b>：目标专业对选科的硬性要求</li>
+      <li><b>支持老高考文理分科</b>：文科 / 理科直接定位</li>
+    </ul>`,
+  visual: `<h3>把抽象的东西"画"出来</h3>
+    <p>理科最怕看不见、学不会。AI 现场生成精确图形（不是手绘假图）：</p>
+    <ul>
+      <li>导数 → 切线斜率动态图</li>
+      <li>圆锥曲线 → 椭圆 / 双曲线 / 抛物线图像</li>
+      <li>公式 → 专业精确排版</li>
+      <li>物理 → 电场线、受力分析；化学 → 结构式、方程式</li>
+      <li>古文与古诗 → 真实水墨生图</li>
+    </ul>
+    <p class="hint">往下滑，看真实的三个动画</p>`,
+  profile: `<h3>千人千面 · 记得住每个学生</h3>
+    <ul>
+      <li><b>掌握度</b>：每个知识点学到哪、薄弱在哪</li>
+      <li><b>选科</b>：记住你的 3+1+2 组合，重点教选中的科目</li>
+      <li><b>术语水平</b>：听不懂就自动换大白话</li>
+      <li><b>错题本</b>：每道错题、错因都记着</li>
+      <li><b>情绪</b>：焦虑了就缓一缓，不硬灌</li>
+    </ul>`,
+  plan: `<h3>高考冲刺 · 三轮复习节奏</h3>
+    <ul>
+      <li><b>一轮</b>：地毯式，逐知识点过关，扫清盲区</li>
+      <li><b>二轮</b>：专题式，跨章节综合、重难点突破</li>
+      <li><b>三轮</b>：套卷式，分省真题 + 限时训练</li>
+      <li><b>考前</b>：回归基础 + 心态稳定</li>
+      <li><b>每周定位</b>：位次换算，看距目标院校差距</li>
+    </ul>`,
+  college: `<h3>志愿填报 · 把分数变成好去处</h3>
+    <ul>
+      <li><b>定位位次</b>：看全省排名，比绝对分更准</li>
+      <li><b>冲稳保</b>：志愿分三档拉开梯度</li>
+      <li><b>专业匹配</b>：结合兴趣 + 就业 + 选科要求</li>
+      <li><b>目标追踪</b>：把目标翻译成提分计划，交校长执行</li>
+    </ul>`
+};
+const tabs = document.querySelectorAll('.tab');
+const panel = document.getElementById('panel');
+function renderPanel() { panel.innerHTML = PANELS[document.querySelector('.tab.active').dataset.t]; }
+tabs.forEach(t => t.onclick = () => { tabs.forEach(x => x.classList.remove('active')); t.classList.add('active'); renderPanel(); });
+renderPanel();
+
+// ===== 可视化 demo =====
+JXG.Options.point = Object.assign({}, JXG.Options.point, { visible: false, withLabel: false });
+
+function renderViz(v) {
+  const box = document.getElementById('demoBox');
+  if (v === 'tangent') {
+    box.innerHTML = `<div class="demo-label">导数切线 · f(x)=x² 在 x=1 处切线斜率 f'(1)=2</div><div id="viz-tangent" style="height:320px;"></div>`;
+    setTimeout(() => {
+      const b = JXG.JSXGraph.initBoard('viz-tangent', { boundingbox: [-3.5, 6.5, 3.5, -1.5], axis: true, grid: true, pan: false, zoom: false, showNavigation: false, showCopyright: false, keepaspectratio: false });
+      b.create('functiongraph', [x => x*x, -3.5, 3.5], { strokeColor: '#3d5a7a', strokeWidth: 3 });
+      b.create('functiongraph', [x => 2*x - 1, -3.5, 3.5], { strokeColor: '#a9554d', strokeWidth: 2, dash: 2 });
+      b.create('point', [1, 1], { size: 3, face: 'o', strokeColor: '#b8893f', fillColor: '#b8893f' });
+    }, 60);
+  } else if (v === 'conic') {
+    box.innerHTML = `<div class="demo-label">圆锥曲线 · 椭圆 x²/9 + y²/4 = 1</div><div id="viz-conic" style="height:320px;"></div>`;
+    setTimeout(() => {
+      const b = JXG.JSXGraph.initBoard('viz-conic', { boundingbox: [-5, 4, 5, -4], axis: true, grid: true, pan: false, zoom: false, showNavigation: false, showCopyright: false, keepaspectratio: false });
+      b.create('ellipse', [[0,0],[3,0],[0,2]], { strokeColor: '#3d5a7a', strokeWidth: 2, fillColor: '#e5e4df', fillOpacity: 0.45 });
+    }, 60);
+  } else if (v === 'formula') {
+    box.innerHTML = `<div class="demo-label">导数定义（KaTeX 精确公式）</div>
+      <div id="viz-formula" style="font-size:28px;padding:20px 0;">\\(f'(x_0) = \\lim_{\\Delta x \\to 0} \\frac{f(x_0+\\Delta x)-f(x_0)}{\\Delta x}\\)</div>`;
+    setTimeout(() => {
+      function tryRender() { if (window.renderMathInElement) { renderMathInElement(document.getElementById('viz-formula')); } else { setTimeout(tryRender, 100); } }
+      tryRender();
+    }, 60);
+  }
+}
+const vizTabs = document.querySelectorAll('.viz-tab');
+vizTabs.forEach(t => t.onclick = () => { vizTabs.forEach(x=>x.classList.remove('active')); t.classList.add('active'); renderViz(t.dataset.v); });
+renderViz('tangent');
+
+// ===== 出题演示（苏格拉底） =====
+const SCRIPT = [
+  { who: 'teacher', text: '小李，我们先不出题，问你一个概念：导数的几何意义是什么？' },
+  { who: 'student', text: '……是切线的斜率吧？' },
+  { who: 'teacher', text: '对！那 f(x)=x² 在 x=1 处的导数，就是曲线在 (1,1) 处切线的斜率。先求导函数，f\'(x) 等于多少？' },
+  { who: 'student', text: 'f\'(x)=2x' },
+  { who: 'teacher', text: '正确。把 x=1 代进去，f\'(1) 等于多少？' },
+  { who: 'student', text: '2！' },
+  { who: 'teacher', text: '很好！切线斜率为 2，说明函数在 x=1 处是上升的。你看，我没直接给答案，是你一步步推出来的。' }
+];
+let si = 0;
+const socraticEl = document.getElementById('socratic');
+function stepSocratic() {
+  if (si >= SCRIPT.length) { si = 0; socraticEl.innerHTML = ''; }
+  const s = SCRIPT[si];
+  const m = document.createElement('div');
+  m.className = 'msg ' + s.who;
+  m.innerHTML = `<span class="tag">${s.who === 'teacher' ? '师' : '生'}</span><div class="bubble">${s.text}</div>`;
+  socraticEl.appendChild(m);
+  socraticEl.scrollTop = socraticEl.scrollHeight;
+  si++;
+  if (si >= SCRIPT.length) document.getElementById('nextSocratic').textContent = '重新演示';
+}
+stepSocratic();
+document.getElementById('nextSocratic').onclick = stepSocratic;
+</script>
+</body>
+</html>
