@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>模拟完整上课流程 · 龙悟AI虚拟学校演示 | Longwu AI Tutor · Interactive Demo</title>
+<meta name="description" content="点一点，体验龙悟AI虚拟学校的一节完整课程：入学测评、苏格拉底式讲题、错题本、学习报告。中英双语演示。A clickable demo of Longwu AI tutor: onboarding, Socratic lesson, mistake notebook, report.">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; }
+:root {
+  --paper:#faf7f0; --paper2:#f5efe2; --card:#fffdf8;
+  --ink:#1f1b16; --ink2:#45403a; --sub:#6f675c; --faint:#a29885;
+  --cinnabar:#b5442c; --cinnabar-d:#93361f; --amber:#c86818; --dai:#2f4858;
+  --green:#5c7a52;
+  --line:rgba(31,27,22,.14); --line-soft:rgba(31,27,22,.08);
+  --serif:"Noto Serif SC","STZhongsong","SimSun",serif;
+  --shadow:0 20px 44px -18px rgba(122,90,44,.15);
+  --shadow-lift:0 30px 56px -22px rgba(122,90,44,.24);
+  --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+body { background:var(--paper); background-image:var(--noise); color:var(--ink); min-height:100vh; -webkit-font-smoothing:antialiased; }
+::selection { background:rgba(181,68,44,.16); }
+
+/* 纸面大字水印 */
+.wm { position:fixed; top:-60px; right:-50px; font-family:var(--serif); font-size:320px; line-height:1; color:var(--ink); opacity:.035; pointer-events:none; user-select:none; z-index:0; }
+
+/* 入场：错落浮现 */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.topbar { animation:fadeUp .7s cubic-bezier(.16,.84,.44,1) both; position:relative; z-index:1; }
+.hero { animation:fadeUp .75s .08s cubic-bezier(.16,.84,.44,1) both; }
+.progress { animation:fadeUp .75s .16s cubic-bezier(.16,.84,.44,1) both; }
+.chat { animation:fadeUp .75s .24s cubic-bezier(.16,.84,.44,1) both; }
+.ctl { animation:fadeUp .75s .32s cubic-bezier(.16,.84,.44,1) both; }
+.footnote { animation:fadeUp .75s .4s cubic-bezier(.16,.84,.44,1) both; }
+@media (prefers-reduced-motion: reduce) { .topbar,.hero,.progress,.chat,.ctl,.footnote,.msg,.wrong-card { animation:none; } }
+
+/* 印章 */
+.seal { width:34px; height:34px; flex:none; position:relative; overflow:hidden; background:var(--cinnabar); color:#faf7f0; font-family:var(--serif); font-size:17px; font-weight:700; border-radius:6px; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 0 1px rgba(250,247,240,.28), inset 0 0 8px rgba(64,12,0,.3), 0 3px 9px rgba(181,68,44,.26); }
+.seal::after { content:''; position:absolute; inset:0; background-image:var(--noise); opacity:.85; pointer-events:none; }
+
+.topbar { max-width:760px; margin:0 auto; padding:18px 20px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; border-bottom:1px solid var(--line-soft); }
+.topbar .brand { font-family:var(--serif); font-weight:900; font-size:16px; display:flex; align-items:center; gap:10px; letter-spacing:1px; }
+.topbar a { font-size:12.5px; color:var(--cinnabar); text-decoration:none; font-weight:700; letter-spacing:.5px; }
+.topbar a:hover { text-decoration:underline; }
+.lang-btn { border:1px solid var(--line); background:var(--card); border-radius:5px; padding:5px 12px; font-size:12px; font-weight:700; letter-spacing:2px; color:var(--ink2); cursor:pointer; transition:all .22s; }
+.lang-btn:hover { border-color:rgba(181,68,44,.5); color:var(--cinnabar); }
+.lang-btn.active { background:var(--cinnabar); color:#faf7f0; border-color:var(--cinnabar); box-shadow:inset 0 0 8px rgba(64,12,0,.3), 0 3px 9px rgba(181,68,44,.3); }
+
+.wrap { max-width:760px; margin:0 auto; padding:0 20px 60px; position:relative; z-index:1; }
+.hero { text-align:center; padding:30px 0 22px; }
+.hero h1 { font-family:var(--serif); font-size:25px; font-weight:900; letter-spacing:2px; }
+.hero .sub { font-size:13px; color:var(--sub); margin-top:6px; }
+.hero .ensub { font-size:11.5px; color:var(--faint); margin-top:7px; letter-spacing:1px; }
+
+/* 进度 */
+.progress { background:var(--card); border:1px solid var(--line-soft); border-radius:10px; padding:16px 18px; box-shadow:var(--shadow); margin-bottom:18px; }
+.p-stage { display:flex; justify-content:space-between; align-items:center; margin-bottom:11px; font-size:13px; font-weight:700; letter-spacing:.5px; font-family:var(--serif); }
+.p-stage .steps-dots { display:flex; gap:7px; }
+.dot { width:9px; height:9px; border-radius:2px; background:rgba(31,27,22,.16); transition:all .3s; }
+.dot.done { background:var(--amber); }
+.dot.now { background:var(--cinnabar); box-shadow:0 0 0 3px rgba(181,68,44,.16); }
+.p-bar { height:5px; background:var(--paper2); border-radius:3px; overflow:hidden; }
+.p-fill { height:100%; width:0%; border-radius:3px; background:var(--cinnabar); transition:width .5s; }
+
+/* 对话 · 纸上便签 */
+.chat { background:var(--card); border:1px solid var(--line-soft); border-radius:10px; padding:24px; min-height:330px; box-shadow:var(--shadow); display:flex; flex-direction:column; }
+.msg { display:flex; gap:12px; margin-bottom:14px; animation:pop .5s cubic-bezier(.16,.84,.44,1); }
+@keyframes pop { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+.msg .avatar { width:36px; height:36px; border-radius:7px; flex:none; display:flex; align-items:center; justify-content:center; font-size:17px; background:var(--paper2); border:1px solid var(--line-soft); }
+.msg.kid { flex-direction:row-reverse; }
+.msg.kid .avatar { background:rgba(200,104,24,.1); border-color:rgba(200,104,24,.28); }
+.msg .bubble { padding:11px 16px; font-size:14.5px; line-height:1.85; max-width:82%; }
+/* 老师：米白宣纸卡 + 朱砂左边框 */
+.msg.tea .bubble { background:#faf6ea; border:1px solid var(--line-soft); border-left:3px solid var(--cinnabar); border-radius:2px 8px 8px 2px; color:var(--ink); box-shadow:0 6px 16px -8px rgba(122,90,44,.18); }
+/* 孩子：淡琥珀底 */
+.msg.kid .bubble { background:#f7ecd6; border:1px solid rgba(200,104,24,.24); border-radius:8px 2px 2px 8px; color:var(--ink); }
+.msg .bubble b { color:var(--cinnabar); font-weight:700; }
+.msg.kid .bubble b { color:var(--amber); }
+/* 提示便签：琥珀虚线 */
+.msg.info .bubble { background:rgba(200,104,24,.07); border:1px dashed rgba(200,104,24,.42); border-radius:6px; color:#7a4a10; }
+/* 答对便签：淡青绿 */
+.msg.ok .bubble { background:#eef2e4; border:1px solid rgba(92,122,82,.3); border-left:3px solid var(--green); border-radius:2px 8px 8px 2px; color:#3f5236; }
+
+/* 选项 */
+.opts { display:flex; flex-direction:column; gap:9px; margin-top:14px; }
+.opt { border:1px solid var(--line); background:var(--card); border-radius:7px; padding:12px 16px; font-size:14.5px; font-weight:600; color:var(--ink); cursor:pointer; transition:all .2s; text-align:left; letter-spacing:.3px; }
+.opt:hover { border-color:var(--cinnabar); transform:translateX(4px); box-shadow:0 6px 16px -8px rgba(181,68,44,.25); }
+.opt:disabled { opacity:.55; cursor:not-allowed; transform:none; }
+.opt.right { border-color:var(--green); background:#eef2e4; color:#3f5236; }
+.opt.wrong { border-color:var(--cinnabar); background:#f9efec; color:#7c2d1a; }
+
+/* 错题卡 */
+.wrong-card { border:1px solid rgba(181,68,44,.35); background:#f9f0ec; border-left:4px solid var(--cinnabar); border-radius:6px; padding:18px 20px; margin-top:12px; animation:pop .5s cubic-bezier(.16,.84,.44,1); }
+.wrong-card h4 { font-family:var(--serif); font-size:15px; color:var(--cinnabar-d); margin-bottom:8px; letter-spacing:.5px; }
+.wrong-card p { font-size:13.5px; line-height:1.95; color:#6b4032; }
+.wrong-card .ok-line { color:#3f5236; font-weight:700; }
+
+/* 按钮 */
+.ctl { text-align:center; margin-top:18px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.btn { padding:13px 30px; border-radius:6px; font-size:15px; font-weight:700; letter-spacing:1px; cursor:pointer; transition:all .22s; text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+.btn-primary { background:var(--cinnabar); color:#faf7f0; border:none; box-shadow:inset 0 0 0 1px rgba(250,247,240,.22), inset 0 0 12px rgba(64,12,0,.25), 0 10px 24px -10px rgba(181,68,44,.5); }
+.btn-primary:hover { background:var(--cinnabar-d); transform:translateY(-2px); box-shadow:inset 0 0 0 1px rgba(250,247,240,.22), inset 0 0 12px rgba(64,12,0,.25), 0 16px 30px -12px rgba(181,68,44,.55); }
+.btn-ghost { background:transparent; color:var(--ink2); border:1px solid var(--line); }
+.btn-ghost:hover { border-color:var(--cinnabar); color:var(--cinnabar); }
+.btn-green { background:var(--dai); color:#f2ede2; border:none; box-shadow:inset 0 0 0 1px rgba(242,237,226,.2), 0 10px 24px -10px rgba(47,72,88,.45); }
+.btn-green:hover { background:#3a5a6e; transform:translateY(-2px); }
+.footnote { text-align:center; margin-top:22px; font-size:12px; color:var(--faint); line-height:1.9; letter-spacing:.3px; }
+
+/* ===== 教具展示卡 · 学习计划 · 教师办公室纸条（展示层新增） ===== */
+.visual-card { margin:2px 0 14px; }
+.vc { background:#faf6ea; border:1px solid rgba(31,27,22,.1); border-left:3px solid var(--amber); border-radius:6px; padding:14px 16px; }
+.vc .vc-tag { font-size:11px; color:var(--amber); font-weight:700; letter-spacing:1px; margin-bottom:6px; }
+.vc svg { width:100%; max-width:340px; display:block; margin:0 auto; }
+.vc .vc-note { font-size:12.5px; color:var(--ink2); line-height:1.8; margin-top:8px; padding:8px 12px; background:rgba(200,104,24,.07); border-radius:4px; }
+.vc .minus3, .vc .xres { display:none; }
+.vc-op .minus3 { display:inline; }
+.vc-op .take rect { stroke:#b5442c; stroke-width:1.8; stroke-dasharray:4 3; fill:rgba(181,68,44,.12); }
+.vc-ans .minus3 { display:inline; opacity:.55; }
+.vc-ans .l3, .vc-ans .r3 { opacity:.12; }
+.vc-ans .xres { display:inline; }
+
+.plan-card { background:var(--card); border:1px solid var(--line-soft); border-radius:8px; padding:16px 18px; }
+.plan-card .pl-head { font-family:var(--serif); font-weight:900; font-size:14.5px; letter-spacing:1px; color:var(--dai); margin-bottom:4px; }
+.plan-card .pl-note { font-size:11.5px; color:var(--faint); margin-bottom:10px; letter-spacing:.3px; }
+.plan-card .pl-list { list-style:none; }
+.plan-card .pl-list li { display:flex; gap:10px; align-items:baseline; font-size:13.5px; color:var(--ink2); line-height:2.1; }
+.plan-card .pl-list i { font-style:normal; font-family:var(--serif); font-size:11px; color:var(--cinnabar); border:1px solid rgba(181,68,44,.4); border-radius:3px; padding:1px 6px; flex:none; }
+
+.office-card { background:var(--card); border:1px dashed rgba(47,72,88,.45); border-radius:8px; padding:16px 18px; }
+.office-card .ofc-head { font-family:var(--serif); font-weight:900; font-size:14.5px; letter-spacing:1px; color:var(--dai); margin-bottom:3px; }
+.office-card .ofc-note { font-size:11.5px; color:var(--faint); margin-bottom:10px; line-height:1.7; }
+.note-strip { background:#faf6ea; border:1px solid rgba(31,27,22,.09); border-left:3px solid var(--dai); border-radius:4px; padding:9px 12px; font-size:13px; color:var(--ink2); line-height:1.8; margin-bottom:8px; transform:rotate(-.4deg); }
+.note-strip:last-child { margin-bottom:0; transform:rotate(.4deg); }
+.note-strip.n2 { border-left-color:var(--green); }
+.note-strip .who { display:inline-block; font-size:11px; font-weight:700; color:var(--dai); border:1px solid rgba(47,72,88,.35); border-radius:3px; padding:1px 7px; margin-right:8px; letter-spacing:.5px; }
+.note-strip.n2 .who { color:var(--green); border-color:rgba(92,122,82,.4); }
+
+@media (max-width:600px) {
+  .chat { padding:16px 14px; }
+  .msg .bubble { max-width:88%; }
+  .btn { padding:12px 22px; }
+  .vc, .plan-card, .office-card { padding:12px 13px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wm" aria-hidden="true">学</div>
+
+<div class="topbar">
+  <div class="brand"><span class="seal">龍</span><span data-i18n="brand">龙悟 · 虚拟学校演示</span></div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <a href="../index.html" data-i18n="back">← 回主页</a>
+    <button class="lang-btn active" id="langZh" onclick="setLang('zh')">中文</button>
+    <button class="lang-btn" id="langEn" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <h1><span data-i18n="heroT">🎬 模拟一节课，亲身体验</span></h1>
+    <div class="ensub">Interactive demo — onboarding → lesson → mistake notebook → report</div>
+  </div>
+
+  <div class="progress">
+    <div class="p-stage">
+      <span id="stageName"></span>
+      <div class="steps-dots" id="dots"></div>
+    </div>
+    <div class="p-bar"><div class="p-fill" id="pfill"></div></div>
+  </div>
+
+  <div class="chat">
+    <div id="chatArea"></div>
+    <div class="opts" id="opts"></div>
+  </div>
+
+  <div class="ctl" id="ctl"></div>
+
+  <div class="footnote">
+    <span data-i18n="note">* 这是产品功能演示：真实使用时，孩子在对话里自由回答，AI 老师实时判断、引导、记画像。</span><br>
+    <span data-i18n="note2">免费 · 开源 · 数据留在自家电脑</span>
+  </div>
+</div>
+
+<script>
+/* ===== 文案 ===== */
+const I18N = {
+zh: {
+  brand:"龙悟 · 虚拟学校演示", back:"← 回主页", heroT:"🎬 模拟一节课，亲身体验",
+  note:"* 这是产品功能演示：真实使用时，孩子在对话里自由回答，AI 老师实时判断、引导、记画像。",
+  note2:"免费 · 开源 · 数据留在自家电脑",
+  stages:["产品介绍","入学测评","上课讲题","错题本","学习报告"],
+  intro1:"你好！我是龙悟虚拟学校的<b>校长</b>。我们不是 App，是一所装在你家电脑文件夹里的 AI 学校。",
+  intro2:"这里演示一节完整的课：<b>入学测评 → 数学课（苏格拉底式讲题）→ 错题本 → 学习报告</b>。你在右侧点选项，就像孩子一样参与。",
+  intro3:"准备好了吗？先来入学测评，让我认识你。",
+  startBtn:"开始入学测评 ▶",
+  a1q:["👑 校长","同学你好！先告诉我：你<b>现在几年级</b>？"],
+  a1:["三年级","五年级","六年级"],
+  a2q:["👑 校长","好。最近<b>哪门课让你最头疼</b>？"],
+  a2:["数学","语文","英语"],
+  a3q:["👑 校长","最后一个问题：这学期你最想实现哪个<b>小目标</b>？"],
+  a3:["数学考到 90 分","把错题全部消灭","上课敢举手提问"],
+  aDone:"测评完成！我已经把你记进画像啦：以后上课会<b>按你的年级、从你最薄弱的地方</b>开始。",
+  aDone2:"接下来是今天的数学课，有请王老师 …… 🧮",
+  lIntro:"小明，看这道题：<b>x + 3 = 7</b>。我用天平给你画出来——两边平平的，一样高。",
+  l1q:["🧮 王老师","天平<b>平平的（平衡）</b>，这告诉我们什么？"],
+  l1:["x + 3 和 7 一样大 ✓","x 比 7 大","两边没有关系"],
+  l1hint:[
+    ["🧮 王老师","再想想：天平平衡的时候，两个盘子里的东西……一样重吗？"],
+    ["🧮 王老师","平衡 = 两边<b>相等</b>。所以 x+3 和 7，是相等的关系。"]
+  ],
+  l2q:["🧮 王老师","对！现在想让 <b>x 自己留在左边</b>，那个多余的「+3」该怎么处理？"],
+  l2:["左边减 3，右边也减 3 ✓","把 x 擦掉","两边都加 3"],
+  l2hint:[
+    ["🧮 王老师","记得天平的铁律：<b>一边做什么，另一边必须跟着做</b>，天平才不会翻。"],
+    ["🧮 王老师","要让左边只剩 x，就得把 3 拿走——当然，右边也要同样拿走 3，才公平。"]
+  ],
+  l3q:["🧮 王老师","右边 7 - 3 = 4。所以 <b>x = ？</b>"],
+  l3:["x = 4 ✓","x = 10","x = 3"],
+  l3hint:[
+    ["🧮 王老师","掰手指算一算：7 拿走 3，还剩几个？"],
+    ["🧮 王老师","7 - 3 = 4，所以 x 就是 4。"]
+  ],
+  lWin:"太棒了！你看——<b>我没有直接把答案告诉你，每一步都是你自己想出来的</b>。这就是苏格拉底式讲题：教你想，不喂你答案。",
+  wTitle:"📒 错题本 · 自动记录",
+  wAuto:"刚才你答错的题，老师已经<b>自动记进你的错题本</b>了：",
+  wQ1:"题目：天平解方程 <b>x + 3 = 7</b>",
+  wA1:"你的思路：想直接擦掉 x",
+  wR1:"正确思路：两边同时减 3，让 x 单独留在左边 → x = 4",
+  wQ2:"题目：方程 <b>x + 3 = 7</b> 中 x 的值",
+  wA2:"你的答案：x = 10",
+  wR2:"解决：7 - 3 = 4，所以 x = 4",
+  wGood:"这一节课你<b>全部答对</b>，没有错题进入错题本。继续保持！🎉",
+  wNext:"错题本会跟着孩子走：下次复习时，老师会优先出同类型的题，直到彻底掌握。",
+  endTitle:"🎓 下课啦！",
+  end1:"这节课 5 分钟，你学会了用天平解方程，还体验了错题本。孩子的每一次学习，AI 老师都会这样记录、复盘。",
+  end2:"接下来生成你的<b>学习报告</b>——家长视角的学情总结，一目了然。",
+  reportBtn:"📄 生成并查看学习报告 →",
+  restartBtn:"🔄 再体验一遍",
+  balTitle:"🧮 老师现场画的教具 · 天平",
+  balInit:"两边平衡：左边 x + 3，右边 7 → x + 3 = 7",
+  balOp:"天平铁律：两边同时拿走 3 个，天平依然平衡",
+  balAns:"左边只剩 x，右边 7 − 3 = 4 → x = 4",
+  planTitle:"📋 今日学习计划 · 校长生成",
+  planNote:"根据刚才的入学测评自动生成，难度随年级调整",
+  plan1:"数学 · 天平解方程 — 15 分钟",
+  plan2:"错题回顾 — 5 分钟",
+  plan3:"休息一下，喝口水 — 课间",
+  ofcTitle:"🧑‍🏫 教师办公室 · 递纸条",
+  ofcNote:"一个老师主讲，背后是整个办公室在协同。纸条是给老师看的，孩子看不到。",
+  ofcW1:"心理老师", ofc1:"孩子连续答对，建议夸一句再下课。",
+  ofcW2:"方法教练", ofc2:"本次用图示法有效，已记入教学策略。",
+  stageIntro:"产品介绍", stageAssess:"入学测评", stageLesson:"上课讲题", stageWrong:"错题本", stageEnd:"学习报告"
+},
+en: {
+  brand:"Longwu · Virtual School Demo", back:"← Home", heroT:"🎬 Simulate a lesson, feel it yourself",
+  note:"* This is a feature demo. In real use, the child answers freely in chat and the AI teacher judges, guides and records.",
+  note2:"Free · Open Source · Data stays at home",
+  stages:["Intro","Assessment","Socratic Lesson","Mistake Notebook","Report"],
+  intro1:"Hello! I'm the <b>principal</b> of Longwu Virtual School. We're not an app — we're an AI school living in a folder on your home computer.",
+  intro2:"This demo walks through a full lesson: <b>assessment → Socratic math lesson → mistake notebook → report</b>. Click the options on the right, just like a student would.",
+  intro3:"Ready? Let's start with the intake assessment.",
+  startBtn:"Start assessment ▶",
+  a1q:["👑 Principal","Hi there! First, tell me: <b>which grade</b> are you in?"],
+  a1:["Grade 3","Grade 5","Grade 6"],
+  a2q:["👑 Principal","Great. Which subject <b>troubles you the most</b> lately?"],
+  a2:["Math","Chinese","English"],
+  a3q:["👑 Principal","Last one: what <b>small goal</b> do you want most this term?"],
+  a3:["Score 90 in math","Wipe out all my mistakes","Dare to ask questions in class"],
+  aDone:"Assessment done! I've written you into the profile: future lessons will start <b>from your grade and your weakest points</b>.",
+  aDone2:"Now, today's math class. Please welcome Mr. Wang …… 🧮",
+  lIntro:"Xiao Ming, look at this problem: <b>x + 3 = 7</b>. I've drawn a balance scale — both sides are level.",
+  l1q:["🧮 Mr. Wang","The scale is <b>level (balanced)</b>. What does that tell us?"],
+  l1:["x + 3 equals 7 ✓","x is bigger than 7","They're unrelated"],
+  l1hint:[
+    ["🧮 Mr. Wang","Think again: when a scale balances, the two pans weigh the… same?"],
+    ["🧮 Mr. Wang","Balanced = the two sides are <b>equal</b>. So x+3 and 7 are equal."]
+  ],
+  l2q:["🧮 Mr. Wang","Right! Now we want <b>x alone on the left</b>. What should we do with that extra +3?"],
+  l2:["Subtract 3 from both sides ✓","Erase the x","Add 3 to both sides"],
+  l2hint:[
+    ["🧮 Mr. Wang","Remember the golden rule of the scale: <b>whatever you do to one side, do to the other</b>."],
+    ["🧮 Mr. Wang","To leave only x on the left, take 3 away — and take 3 from the right too, to stay fair."]
+  ],
+  l3q:["🧮 Mr. Wang","On the right: 7 - 3 = 4. So <b>x = ?</b>"],
+  l3:["x = 4 ✓","x = 10","x = 3"],
+  l3hint:[
+    ["🧮 Mr. Wang","Count on your fingers: 7 minus 3 leaves how many?"],
+    ["🧮 Mr. Wang","7 - 3 = 4, so x = 4."]
+  ],
+  lWin:"Excellent! Notice — <b>I never handed you the answer. Every step came from you.</b> That's Socratic tutoring: teach thinking, not answers.",
+  wTitle:"📒 Mistake Notebook · auto-saved",
+  wAuto:"The question you missed has been <b>automatically saved</b> to the mistake notebook:",
+  wQ1:"Problem: solve <b>x + 3 = 7</b> with the balance",
+  wA1:"Your idea: erase the x directly",
+  wR1:"Right path: subtract 3 from both sides so x stays alone → x = 4",
+  wQ2:"Problem: the value of x in <b>x + 3 = 7</b>",
+  wA2:"Your answer: x = 10",
+  wR2:"Solution: 7 - 3 = 4, so x = 4",
+  wGood:"You got <b>everything right</b> this lesson — nothing entered the notebook. Keep it up! 🎉",
+  wNext:"The notebook follows the child: next review, the teacher shows similar questions first, until fully mastered.",
+  endTitle:"🎓 Class dismissed!",
+  end1:"In 5 minutes you solved equations with a balance and saw the mistake notebook. Every real session gets recorded and reviewed like this.",
+  end2:"Now let's generate your <b>study report</b> — a parent-friendly summary at a glance.",
+  reportBtn:"📄 Generate & view report →",
+  restartBtn:"🔄 Replay the demo",
+  balTitle:"🧮 Visual aid drawn live · Balance scale",
+  balInit:"Both sides balance: left x + 3, right 7 → x + 3 = 7",
+  balOp:"Golden rule of the scale: take 3 from both sides — it stays balanced",
+  balAns:"Only x remains on the left; right 7 − 3 = 4 → x = 4",
+  planTitle:"📋 Today's Study Plan · by the Principal",
+  planNote:"Auto-generated from your intake assessment; difficulty adapts to grade",
+  plan1:"Math · Equations with the balance — 15 min",
+  plan2:"Mistake review — 5 min",
+  plan3:"Break time — sip some water",
+  ofcTitle:"🧑‍🏫 Teachers' Office · Passing Notes",
+  ofcNote:"One teacher leads the class — the whole office supports behind the scenes. Notes are for teachers only.",
+  ofcW1:"Counselor", ofc1:"The child answered correctly several times in a row — suggest a word of praise before class ends.",
+  ofcW2:"Method Coach", ofc2:"The visual approach worked well this session — saved to teaching strategies.",
+  stageIntro:"Intro", stageAssess:"Assessment", stageLesson:"Socratic Lesson", stageWrong:"Mistake Notebook", stageEnd:"Report"
+}
+};
+
+/* ===== 状态机 ===== */
+let LANG = 'zh';
+const t = k => I18N[LANG][k];
+// stage: 0 介绍 1 测评 2 讲题 3 错题本 4 结束
+let stage = 0;
+let step = 0;
+let wrongCount = 0;
+let wrongAnswered = false;
+let kidGrade = '', kidSubject = '', kidGoal = '';
+const STAGE_KEYS = ['stageIntro','stageAssess','stageLesson','stageWrong','stageEnd'];
+
+const INTERACTIVE_INDEXES = { 'l1':['l1','l1hint'], 'l2':['l2','l2hint'], 'l3':['l3','l3hint'] };
+
+// 错题记录（按槽位）
+function wrongEntry(slot){
+  if (slot==='l2') return { q:t('wQ1'), a:t('wA1'), r:t('wR1') };
+  if (slot==='l3') return { q:t('wQ2'), a:t('wA2'), r:t('wR2') };
+  return null;
+}
+
+const chatArea = document.getElementById('chatArea');
+const optsEl = document.getElementById('opts');
+const ctlEl = document.getElementById('ctl');
+
+function bubble(kind, key){
+  const m = document.createElement('div');
+  m.className = 'msg ' + (kind==='kid' ? 'kid' : kind==='info' ? 'info' : kind==='ok' ? 'ok' : 'tea');
+  const avatar = kind==='kid' ? '👦' : kind==='info' ? '📌' : kind==='ok' ? '✅' : '🎓';
+  let html = `<div class="avatar">${avatar}</div><div class="bubble">${key}</div>`;
+  m.innerHTML = html;
+  chatArea.appendChild(m);
+  chatArea.scrollTop = chatArea.scrollHeight;
+  return m;
+}
+function teaPair(arr) { bubble('tea', arr[1]); }
+function clearOpts(){ optsEl.innerHTML = ''; }
+function clearCtl(){ ctlEl.innerHTML = ''; }
+
+function renderProgress(){
+  const names = I18N[LANG].stages;
+  document.getElementById('stageName').textContent = `${stage+1}/5 · ${t(STAGE_KEYS[stage])}`;
+  document.getElementById('pfill').style.width = ((stage)/5*100 + 12) + '%';
+  const dots = document.getElementById('dots'); dots.innerHTML = '';
+  for (let i=0;i<5;i++){
+    const d = document.createElement('div');
+    d.className = 'dot' + (i<stage ? ' done' : i===stage ? ' now' : '');
+    dots.appendChild(d);
+  }
+}
+
+/* ---------------- 渲染各阶段 ---------------- */
+function renderIntro(){
+  bubble('tea', t('intro1'));
+  bubble('tea', t('intro2'));
+  bubble('tea', t('intro3'));
+  ctlEl.innerHTML = `<button class="btn btn-primary" onclick="goAssess()">${t('startBtn')}</button>`;
+}
+function goAssess(){ stage = 1; step = 0; renderAll(); }
+
+const ASSESS_QS = [ ['a1q','a1','kidGrade'], ['a2q','a2','kidSubject'], ['a3q','a3','kidGoal'] ];
+function renderAssess(){
+  if (step >= 3){ stage = 2; step = 0; renderAll(); return; }
+  const [qk, ok, store] = ASSESS_QS[step];
+  bubble('tea', t(qk)[1]);
+  optsEl.innerHTML = '';
+  t(ok).forEach((o,i) => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.textContent = o;
+    b.onclick = () => {
+      bubble('kid', o);
+      const vals = ['三年级','五年级','六年级','数学','语文','英语','数学考到 90 分','把错题全部消灭','上课敢举手提问'];
+      const enVals = ['Grade 3','Grade 5','Grade 6','Math','Chinese','English','Score 90 in math','Wipe out all my mistakes','Dare to ask questions in class'];
+      const valStore = langSafePick(vals, enVals, o, i);
+      if (store==='kidGrade') kidGrade = valStore;
+      if (store==='kidSubject') kidSubject = valStore;
+      if (store==='kidGoal') kidGoal = valStore;
+      clearOpts(); step++; setTimeout(renderAssess, 650);
+    };
+    optsEl.appendChild(b);
+  });
+}
+function langSafePick(zhArr, enArr, o, i){ return LANG==='en' ? enArr[zhArr.indexOf(o)] ?? enArr[i] : o; }
+
+function renderLesson(){
+  if (step >= 4){ stage = 3; renderAll(); return; }
+  if (step === 0){
+    bubble('tea', t('aDone'));
+    planCard();
+    bubble('tea', t('aDone2'));
+    bubble('tea', t('lIntro'));
+    balanceCard('init');
+    ctlEl.innerHTML = `<button class="btn btn-primary" onclick="lessonNext()">${t('startBtn')}</button>`;
+    return;
+  }
+  clearCtl();
+  const slot = ['l1','l2','l3'][step-1];
+  bubble('tea', t(slot+'q')[1]);
+  if (step === 2) balanceCard('op');
+  if (step === 3) balanceCard('ans');
+  const choices = t(slot);
+  optionsRow(slot, choices);
+}
+function lessonNext(){ step++; renderLesson(); }
+function optionsRow(slot, choices){
+  optsEl.innerHTML = '';
+  choices.forEach((o,i) => {
+    const b = document.createElement('button');
+    b.className = 'opt'; b.textContent = o;
+    b.onclick = () => {
+      bubble('kid', o);
+      const right = i===0;
+      clearOpts();
+      if (right){
+        bubble('ok', LANG==='zh' ? '答对啦！' : 'Correct!');
+        step++;
+        if (step >= 4){ bubble('tea', t('lWin')); ctlEl.innerHTML = `<button class="btn btn-primary" onclick="goWrong()">${t('startBtn')}</button>`; }
+        else setTimeout(renderLesson, 750);
+      } else {
+        wrongAnswered = true; wrongCount++;
+        const hints = t(slot+'hint');
+        bubble('info', hints[0][1]);
+        bubble('tea', hints[1][1]);
+        optionsRow(slot, choices);  // 再试
+      }
+    };
+    optsEl.appendChild(b);
+  });
+}
+function goWrong(){ stage = 3; renderAll(); }
+
+/* ---------------- 展示层卡片：教具 / 计划 / 办公室（不参与状态判断） ---------------- */
+function visualCard(cls, inner){
+  const m = document.createElement('div');
+  m.className = 'visual-card ' + cls;
+  m.innerHTML = inner;
+  chatArea.appendChild(m);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function balanceCard(mode){
+  const note = mode==='op' ? t('balOp') : mode==='ans' ? t('balAns') : t('balInit');
+  visualCard('vc vc-' + mode, `
+    <div class="vc-tag">${t('balTitle')}</div>
+    <svg viewBox="0 0 340 175" role="img" aria-hidden="true">
+      <rect x="134" y="158" width="72" height="9" rx="4" fill="#45403a"/>
+      <rect x="167" y="62" width="6" height="98" fill="#45403a"/>
+      <circle cx="170" cy="58" r="5" fill="#1f1b16"/>
+      <rect x="28" y="55" width="284" height="5" rx="2.5" fill="#1f1b16"/>
+      <line x1="70" y1="60" x2="46" y2="97" stroke="#45403a" stroke-width="1.5"/>
+      <line x1="70" y1="60" x2="94" y2="97" stroke="#45403a" stroke-width="1.5"/>
+      <line x1="270" y1="60" x2="246" y2="97" stroke="#45403a" stroke-width="1.5"/>
+      <line x1="270" y1="60" x2="294" y2="97" stroke="#45403a" stroke-width="1.5"/>
+      <ellipse cx="70" cy="100" rx="46" ry="9" fill="#f5efe2" stroke="#45403a" stroke-width="1.5"/>
+      <ellipse cx="270" cy="100" rx="46" ry="9" fill="#f5efe2" stroke="#45403a" stroke-width="1.5"/>
+      <g>
+        <rect x="26" y="67" width="24" height="24" rx="3" fill="#fffdf8" stroke="#b5442c" stroke-width="2"/>
+        <text x="38" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#b5442c" font-family="Georgia,serif">x</text>
+      </g>
+      <g class="take l3">
+        <rect x="56" y="76" width="15" height="15" rx="2" fill="#f5efe2" stroke="#45403a"/>
+        <rect x="74" y="76" width="15" height="15" rx="2" fill="#f5efe2" stroke="#45403a"/>
+        <rect x="92" y="76" width="15" height="15" rx="2" fill="#f5efe2" stroke="#45403a"/>
+      </g>
+      <g class="take r3">
+        <rect x="230" y="61" width="15" height="15" rx="2" fill="#f5efe2" stroke="#45403a"/>
+        <rect x="248" y="61" width="15" height="15" rx="2" fill="#f5efe2" stroke="#45403a"/>
+        <rect x="266" y="61" width="15" height="15" rx="2" fill="#f5efe2" stroke="#45403a"/>
+      </g>
+      <g class="r4">
+        <rect x="284" y="61" width="15" height="15" rx="2" fill="#f5efe2" stroke="#45403a"/>
+        <rect x="239" y="76" width="15" height="15" rx="2" fill="#f5efe2" stroke="#45403a"/>
+        <rect x="257" y="76" width="15" height="15" rx="2" fill="#f5efe2" stroke="#45403a"/>
+        <rect x="275" y="76" width="15" height="15" rx="2" fill="#f5efe2" stroke="#45403a"/>
+      </g>
+      <text x="70" y="126" text-anchor="middle" font-size="13" fill="#6f675c" font-family="Georgia,serif">x + 3</text>
+      <text x="270" y="126" text-anchor="middle" font-size="13" fill="#6f675c" font-family="Georgia,serif">7</text>
+      <g class="minus3">
+        <text x="82" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="#b5442c">−3</text>
+        <text x="248" y="48" text-anchor="middle" font-size="13" font-weight="700" fill="#b5442c">−3</text>
+      </g>
+      <text class="xres" x="170" y="34" text-anchor="middle" font-size="17" font-weight="700" fill="#b5442c" font-family="Georgia,serif">x = 4 ✓</text>
+    </svg>
+    <div class="vc-note">${note}</div>`);
+}
+
+function planCard(){
+  visualCard('plan-card', `
+    <div class="pl-head">${t('planTitle')}</div>
+    <div class="pl-note">${t('planNote')}</div>
+    <ul class="pl-list">
+      <li><i>壹</i>${t('plan1')}</li>
+      <li><i>貳</i>${t('plan2')}</li>
+      <li><i>叁</i>${t('plan3')}</li>
+    </ul>`);
+}
+
+function officeNotes(){
+  visualCard('office-card', `
+    <div class="ofc-head">${t('ofcTitle')}</div>
+    <div class="ofc-note">${t('ofcNote')}</div>
+    <div class="note-strip n1"><span class="who">${t('ofcW1')}</span>${t('ofc1')}</div>
+    <div class="note-strip n2"><span class="who">${t('ofcW2')}</span>${t('ofc2')}</div>`);
+}
+
+function renderWrong(){
+  officeNotes();
+  bubble('tea', t('wTitle'));
+  if (wrongAnswered){
+    bubble('tea', t('wAuto'));
+    const m = document.createElement('div');
+    m.className = 'wrong-card';
+    let html = '';
+    // 展示两道可能的错题（按实际猜错情况简化：通用展示）
+    html += `<h4>📌 错题 1</h4><p>${t('wQ1')}</p><p>${t('wA1')}</p><p class="ok-line">${t('wR1')}</p>`;
+    m.innerHTML = html + `<h4 style="margin-top:12px;">📌 错题 2</h4><p>${t('wQ2')}</p><p>${t('wA2')}</p><p class="ok-line">${t('wR2')}</p>`;
+    chatArea.appendChild(m); chatArea.scrollTop = chatArea.scrollHeight;
+  } else {
+    bubble('ok', t('wGood'));
+  }
+  bubble('tea', t('wNext'));
+  ctlEl.innerHTML = `<button class="btn btn-primary" onclick="goEnd()">${t('startBtn')}</button>`;
+}
+function goEnd(){ stage = 4; renderAll(); }
+
+function renderEnd(){
+  bubble('tea', t('endTitle'));
+  bubble('tea', t('end1'));
+  bubble('tea', t('end2'));
+  ctlEl.innerHTML = `
+    <a class="btn btn-green" href="report-demo.html">${t('reportBtn')}</a>
+    <button class="btn btn-ghost" onclick="fullReset()">${t('restartBtn')}</button>`;
+}
+
+/* ---------------- 渲染入口 ---------------- */
+function renderAll(){
+  chatArea.innerHTML = ''; clearOpts(); clearCtl(); renderProgress();
+  if (stage===0) renderIntro();
+  else if (stage===1) renderAssess();
+  else if (stage===2) renderLesson();
+  else if (stage===3) renderWrong();
+  else renderEnd();
+}
+function fullReset(){
+  stage = 0; step = 0; wrongCount = 0; wrongAnswered = false;
+  kidGrade = kidSubject = kidGoal = '';
+  renderAll();
+}
+
+/* ---------------- 语言切换 ---------------- */
+function setLang(lang){
+  LANG = lang;
+  document.getElementById('langZh').classList.toggle('active', lang==='zh');
+  document.getElementById('langEn').classList.toggle('active', lang==='en');
+  document.documentElement.lang = lang==='zh' ? 'zh-CN' : 'en';
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  // 保留进度重渲染
+  if (stage===1 && step>=3){ stage = 2; step = 0; }
+  renderAll();
+  try { localStorage.setItem('longwu-lang', lang); } catch(e){}
+}
+
+const saved = (()=>{ try { return localStorage.getItem('longwu-lang'); } catch(e){ return null; } })();
+setLang(saved === 'en' ? 'en' : 'zh');
+</script>
+</body>
+</html>

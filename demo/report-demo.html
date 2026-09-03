@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>孩子学习报告示例 · 龙悟AI虚拟学校 | Student Report Sample · Longwu AI Tutor</title>
+<meta name="description" content="龙悟AI虚拟学校自动生成的学习报告示例：学情总览、知识点掌握度、错题回顾、老师建议、给家长的话。中英双语。Sample student report from Longwu AI tutor.">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; }
+:root {
+  --paper:#faf7f0; --paper2:#f5efe2; --card:#fffdf8;
+  --ink:#1f1b16; --ink2:#45403a; --sub:#6f675c; --faint:#a29885;
+  --cinnabar:#b5442c; --cinnabar-d:#93361f; --amber:#c86818; --dai:#2f4858;
+  --green:#5c7a52;
+  --line:rgba(31,27,22,.14); --line-soft:rgba(31,27,22,.08);
+  --serif:"Noto Serif SC","STZhongsong","SimSun",serif;
+  --shadow:0 20px 44px -18px rgba(122,90,44,.15);
+  --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+body { background:var(--paper); background-image:var(--noise); color:var(--ink); min-height:100vh; -webkit-font-smoothing:antialiased; }
+::selection { background:rgba(181,68,44,.16); }
+
+/* 纸面大字水印 */
+.wm { position:fixed; top:-60px; right:-50px; font-family:var(--serif); font-size:320px; line-height:1; color:var(--ink); opacity:.035; pointer-events:none; user-select:none; z-index:0; }
+
+/* 入场：错落浮现 */
+@keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+.topbar { animation:fadeUp .7s cubic-bezier(.16,.84,.44,1) both; position:relative; z-index:1; }
+.wrap > * { animation:fadeUp .8s cubic-bezier(.16,.84,.44,1) both; }
+.wrap > *:nth-child(1) { animation-delay:.06s; }
+.wrap > *:nth-child(2) { animation-delay:.14s; }
+.wrap > *:nth-child(3) { animation-delay:.22s; }
+.wrap > *:nth-child(4) { animation-delay:.3s; }
+.wrap > *:nth-child(5) { animation-delay:.38s; }
+.wrap > *:nth-child(6) { animation-delay:.46s; }
+.wrap > *:nth-child(7) { animation-delay:.54s; }
+.wrap > *:nth-child(8) { animation-delay:.62s; }
+@media (prefers-reduced-motion: reduce) { .topbar, .wrap > * { animation:none; } }
+
+/* 印章 */
+.seal { width:34px; height:34px; flex:none; position:relative; overflow:hidden; background:var(--cinnabar); color:#faf7f0; font-family:var(--serif); font-size:17px; font-weight:700; border-radius:6px; display:flex; align-items:center; justify-content:center; box-shadow:inset 0 0 0 1px rgba(250,247,240,.28), inset 0 0 8px rgba(64,12,0,.3), 0 3px 9px rgba(181,68,44,.26); }
+.seal::after { content:''; position:absolute; inset:0; background-image:var(--noise); opacity:.85; pointer-events:none; }
+
+.topbar { max-width:780px; margin:0 auto; padding:18px 20px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; border-bottom:1px solid var(--line-soft); }
+.topbar .brand { font-family:var(--serif); font-weight:900; font-size:16px; display:flex; align-items:center; gap:10px; letter-spacing:1px; }
+.topbar a { font-size:12.5px; color:var(--cinnabar); text-decoration:none; font-weight:700; letter-spacing:.5px; }
+.topbar a:hover { text-decoration:underline; }
+.lang-btn { border:1px solid var(--line); background:var(--card); border-radius:5px; padding:5px 12px; font-size:12px; font-weight:700; letter-spacing:2px; color:var(--ink2); cursor:pointer; transition:all .22s; }
+.lang-btn:hover { border-color:rgba(181,68,44,.5); color:var(--cinnabar); }
+.lang-btn.active { background:var(--cinnabar); color:#faf7f0; border-color:var(--cinnabar); box-shadow:inset 0 0 8px rgba(64,12,0,.3), 0 3px 9px rgba(181,68,44,.3); }
+
+.wrap { max-width:780px; margin:0 auto; padding:0 20px 60px; position:relative; z-index:1; }
+.sample-flag { text-align:center; margin-top:20px; }
+.sample-flag span { display:inline-block; background:var(--paper2); border:1px dashed rgba(200,104,24,.45); color:#7a4a10; font-size:12px; font-weight:600; padding:6px 16px; border-radius:4px; letter-spacing:1px; }
+
+/* 封面卡 */
+.cover { background:var(--card); border:1px solid var(--line-soft); border-radius:12px; padding:32px 28px; box-shadow:var(--shadow); margin-top:18px; }
+.cover .head { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+.avatar { width:64px; height:64px; border-radius:10px; background:rgba(200,104,24,.1); border:1px solid rgba(200,104,24,.3); display:flex; align-items:center; justify-content:center; font-size:30px; }
+.cover h1 { font-family:var(--serif); font-size:26px; font-weight:900; letter-spacing:2px; }
+.cover .meta { font-size:13px; color:var(--sub); margin-top:6px; line-height:2; }
+.cover .meta b { color:var(--ink); font-family:var(--serif); }
+.badge-pill { display:inline-block; padding:3px 10px; border-radius:3px; border:1px solid rgba(181,68,44,.42); color:var(--cinnabar); font-size:11px; font-weight:700; letter-spacing:1px; margin-left:6px; }
+.period { display:inline-block; margin-top:14px; background:var(--paper2); border:1px solid var(--line-soft); border-radius:4px; padding:7px 16px; font-size:12.5px; color:var(--ink2); letter-spacing:.5px; }
+
+/* 统计四宫格 */
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:14px; margin-top:20px; }
+.stat { background:var(--card); border:1px solid var(--line-soft); border-radius:10px; padding:22px 16px; text-align:center; box-shadow:var(--shadow); transition:transform .3s ease, border-color .3s ease; }
+.stat:hover { transform:translateY(-3px); border-color:rgba(181,68,44,.45); }
+.stat .v { font-family:var(--serif); font-size:30px; font-weight:900; color:var(--cinnabar); }
+.stat .l { font-size:12.5px; color:var(--ink2); margin-top:8px; font-weight:600; }
+.stat .le { font-size:10.5px; color:var(--faint); margin-top:3px; letter-spacing:1px; text-transform:uppercase; }
+
+/* 卡片区块 */
+.card { background:var(--card); border:1px solid var(--line-soft); border-radius:12px; padding:28px 26px; box-shadow:var(--shadow); margin-top:20px; }
+.card h2 { font-family:var(--serif); font-size:19px; font-weight:900; letter-spacing:1.5px; margin-bottom:4px; }
+.cno { display:inline-block; font-family:var(--serif); font-size:12px; color:var(--cinnabar); border:1px solid rgba(181,68,44,.45); border-radius:3px; padding:3px 7px; letter-spacing:2px; line-height:1; vertical-align:4px; margin-right:10px; }
+.card > .en { font-size:11px; color:var(--faint); margin-bottom:18px; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+
+/* 掌握度条 */
+.mrow { margin-bottom:16px; }
+.mrow .mt { display:flex; justify-content:space-between; font-size:13.5px; font-weight:700; margin-bottom:7px; }
+.mrow .mt .pct { color:var(--cinnabar); font-family:var(--serif); }
+.mrow .me { font-size:10.5px; color:var(--faint); font-weight:500; text-align:right; margin-top:3px; letter-spacing:.6px; }
+.mbar { height:6px; background:var(--paper2); border-radius:3px; overflow:hidden; }
+.mfill { height:100%; border-radius:3px; transition:width 1s ease; }
+.f-green { background:var(--green); }
+.f-blue { background:var(--dai); }
+.f-orange { background:var(--amber); }
+.f-red { background:var(--cinnabar); }
+
+/* 错题卡 */
+.wq { border:1px solid rgba(181,68,44,.3); background:#f9f0ec; border-left:4px solid var(--cinnabar); border-radius:6px; padding:16px 18px; margin-bottom:12px; }
+.wq .q { font-size:14px; font-weight:700; margin-bottom:7px; line-height:1.7; }
+.wq p { font-size:13px; color:#6b4032; line-height:1.9; }
+.wq .ok { color:#3f5236; font-weight:700; }
+.wq .tag { display:inline-block; font-size:10.5px; font-weight:700; background:rgba(181,68,44,.1); color:var(--cinnabar-d); padding:2px 9px; border-radius:3px; margin-left:8px; letter-spacing:.5px; }
+
+/* 建议框 */
+.advice { border-left:3px solid var(--dai); background:#f6f3ea; border-radius:0 8px 8px 0; padding:15px 18px; margin-bottom:12px; }
+.advice.green { border-left-color:var(--green); background:#f3f4ea; }
+.advice h4 { font-family:var(--serif); font-size:15px; margin-bottom:5px; letter-spacing:.5px; }
+.advice p { font-size:13px; color:var(--sub); line-height:1.95; }
+.advice .en { font-size:11px; color:var(--faint); line-height:1.8; letter-spacing:.3px; margin-top:6px; }
+
+.footer { text-align:center; margin-top:30px; font-size:12px; color:var(--faint); line-height:2.1; letter-spacing:.3px; }
+.footer a { color:var(--cinnabar); text-decoration:none; font-weight:700; }
+.footer a:hover { text-decoration:underline; }
+
+/* ===== 新增区块：时间分布柱状图 / 雷达图 / 各科概览 / 计划表 ===== */
+.bars { display:flex; align-items:flex-end; gap:10px; height:160px; padding:14px 6px 0; border-bottom:1px solid var(--line-soft); }
+.bcol { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:5px; }
+.bval { font-size:10.5px; color:var(--faint); font-family:Georgia,serif; }
+.bfill { width:100%; max-width:36px; background:linear-gradient(180deg, rgba(181,68,44,.85), rgba(181,68,44,.55)); border-radius:3px 3px 0 0; }
+.bcol:hover .bfill { background:linear-gradient(180deg, var(--cinnabar), rgba(181,68,44,.7)); }
+.bfill.wk { background:linear-gradient(180deg, var(--cinnabar), rgba(147,54,31,.75)); }
+.blabels { display:flex; gap:10px; margin-top:8px; }
+.blabels span { flex:1; text-align:center; font-size:11.5px; color:var(--sub); }
+.btotal { margin-top:14px; font-size:12px; color:var(--ink2); background:var(--paper2); border:1px solid var(--line-soft); border-radius:4px; padding:7px 14px; display:inline-block; letter-spacing:.5px; }
+
+.radar { width:100%; max-width:300px; display:block; margin:8px auto 0; }
+.radar .grid { fill:none; stroke:rgba(31,27,22,.16); stroke-width:1; }
+.radar .axis { stroke:rgba(31,27,22,.12); stroke-width:1; }
+.radar .data { fill:rgba(181,68,44,.18); stroke:#b5442c; stroke-width:1.6; stroke-linejoin:round; }
+.radar .dot { fill:#b5442c; }
+.radar text { font-size:10px; fill:#6f675c; }
+.radar .num { fill:#a29885; font-size:9px; font-family:Georgia,serif; }
+.radar .lab { font-weight:700; letter-spacing:.5px; }
+
+.subj-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-top:4px; }
+.subj { background:var(--paper2); border:1px solid var(--line-soft); border-radius:8px; padding:16px; }
+.subj .sj-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
+.subj .sj-name { font-family:var(--serif); font-weight:900; font-size:15px; letter-spacing:1px; }
+.subj .sj-pct { font-family:var(--serif); font-size:22px; font-weight:900; color:var(--cinnabar); }
+.subj .sj-note { font-size:12px; color:var(--sub); line-height:1.8; }
+
+.plan-table { width:100%; border-collapse:collapse; margin-top:4px; }
+.plan-table th { font-family:var(--serif); font-size:12.5px; letter-spacing:1px; color:var(--ink); text-align:left; padding:9px 12px; background:var(--paper2); border-bottom:1px solid var(--line); }
+.plan-table td { font-size:13px; color:var(--ink2); padding:10px 12px; border-bottom:1px solid var(--line-soft); }
+.plan-table tr:last-child td { border-bottom:none; }
+.plan-table td:first-child { color:var(--cinnabar); font-weight:700; white-space:nowrap; }
+.plan-table td:last-child { white-space:nowrap; color:var(--faint); }
+.plan-table tbody tr:hover td { background:rgba(181,68,44,.03); }
+
+@media (max-width:600px) {
+  .card { padding:22px 18px; }
+  .cover { padding:24px 20px; }
+  .plan-table th, .plan-table td { padding:8px 8px; font-size:12px; }
+  .bars { gap:6px; }
+  .blabels { gap:6px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wm" aria-hidden="true">龍</div>
+
+<div class="topbar">
+  <div class="brand"><span class="seal">龍</span><span data-i18n="brand">龙悟 · 学习报告</span></div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <a href="interactive-demo.html" data-i18n="demoLink">🎬 回演示</a>
+    <a href="../index.html" data-i18n="homeLink">← 回主页</a>
+    <button class="lang-btn active" id="langZh" onclick="setLang('zh')">中文</button>
+    <button class="lang-btn" id="langEn" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="sample-flag"><span data-i18n="flag">示例数据 · 演示用 Sample Data</span></div>
+
+  <div class="cover">
+    <div class="head">
+      <div class="avatar">👦</div>
+      <div>
+        <h1 data-i18n="name">小明</h1>
+        <div class="meta">
+          <span data-i18n="meta1">🎒 <b>六年级</b></span><span class="badge-pill" data-i18n="meta2">小升初冲刺阶段</span><br>
+          <span data-i18n="meta3">📚 教材：人教版</span> · <span data-i18n="meta4">🖥️ 学习方式：本地 AI 老师（文件夹）</span>
+        </div>
+      </div>
+    </div>
+    <div class="period" data-i18n="period">📅 本报告周期：2026-08-18 ～ 2026-08-30（两周）</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="v">12</div><div class="l" data-i18n="s1">学习天数</div><div class="le">days studied</div></div>
+    <div class="stat"><div class="v">4.5h</div><div class="l" data-i18n="s2">累计学时</div><div class="le">total hours</div></div>
+    <div class="stat"><div class="v">87%</div><div class="l" data-i18n="s3">答题正确率</div><div class="le">accuracy</div></div>
+    <div class="stat"><div class="v">9</div><div class="l" data-i18n="s4">已消灭错题</div><div class="le">mistakes fixed</div></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="cno">壹</span><span data-i18n="mTitle">📊 知识点掌握度</span></h2>
+    <div class="en">Mastery by topic</div>
+    <div class="mrow">
+      <div class="mt"><span data-i18n="m1">分数应用题（单位1）</span><span class="pct">95%</span></div>
+      <div class="mbar"><div class="mfill f-green" style="width:95%"></div></div>
+      <div class="me">word problems with fractions</div>
+    </div>
+    <div class="mrow">
+      <div class="mt"><span data-i18n="m2">简易方程（天平法）</span><span class="pct">92%</span></div>
+      <div class="mbar"><div class="mfill f-green" style="width:92%"></div></div>
+      <div class="me">simple equations</div>
+    </div>
+    <div class="mrow">
+      <div class="mt"><span data-i18n="m3">数轴与正负数</span><span class="pct">85%</span></div>
+      <div class="mbar"><div class="mfill f-blue" style="width:85%"></div></div>
+      <div class="me">number line & signed numbers</div>
+    </div>
+    <div class="mrow">
+      <div class="mt"><span data-i18n="m4">百分数与折扣</span><span class="pct">72%</span></div>
+      <div class="mbar"><div class="mfill f-orange" style="width:72%"></div></div>
+      <div class="me">percentages & discounts</div>
+    </div>
+    <div class="mrow">
+      <div class="mt"><span data-i18n="m5">比例与行程问题</span><span class="pct">58%</span></div>
+      <div class="mbar"><div class="mfill f-red" style="width:58%"></div></div>
+      <div class="me">ratios & travel problems</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="cno">貳</span><span data-i18n="wTitle">📒 错题回顾（本周期最有价值的 2 道）</span></h2>
+    <div class="en">Mistake review — the 2 most valuable this period</div>
+    <div class="wq">
+      <div class="q" data-i18n="wq1">1. 一根绳子，第一次用去 1/2，第二次用去剩下的 1/3，还剩全长的几分之几？<span class="tag" data-i18n="wtag1">错因：单位1 变化</span></div>
+      <p data-i18n="wa1">当时答：还剩 1/6 · <span class="ok">正确：1/3 —— 第二次的"单位1"变成了剩下的半根，老师用线段图画给你看，一次就通了。</span></p>
+    </div>
+    <div class="wq">
+      <div class="q" data-i18n="wq2">2. 一件衣服先涨 10%，再降 10%，现价和原价比？<span class="tag" data-i18n="wtag2">错因：误以为抵消</span></div>
+      <p data-i18n="wa2">当时答：不变 · <span class="ok">正确：变便宜了 —— 两次的"单位1"不同，AI 老师用"先涨后降"的生活例子帮你记住了。</span></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="cno">叁</span><span data-i18n="oTitle">😊 情绪与专注观察</span></h2>
+    <div class="en">Mood & focus notes</div>
+    <div class="advice">
+      <h4 data-i18n="o1">学习状态整体很稳</h4>
+      <p data-i18n="o1p">12 天里有 9 天是主动开始学习的；连续答题超过 25 分钟时，老师会安排"缓一缓"，你的投入度保持得不错。</p>
+      <div class="en">9 of 12 days started voluntarily; breaks are suggested after 25-min stretches — engagement is healthy.</div>
+    </div>
+    <div class="advice green">
+      <h4 data-i18n="o2">一个要夸的点</h4>
+      <p data-i18n="o2p">上周四遇到难题说了句"我再想想"，没有求助也没有放弃——老师把你这个瞬间记下来了。</p>
+      <div class="en">On Thursday you said "let me think again" — persistence noted and praised.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="cno">肆</span><span data-i18n="aTitle">🎯 老师给孩子的建议</span></h2>
+    <div class="en">Advice for the student</div>
+    <div class="advice">
+      <h4 data-i18n="a1">攻下"比例与行程"这座小山</h4>
+      <p data-i18n="a1p">这是你目前最薄弱的知识点（58%）。接下来两周，每天 1 道行程题 + 线段图法，老师陪你把它推到 80% 以上。</p>
+    </div>
+    <div class="advice green">
+      <h4 data-i18n="a2">保持"多问为什么"</h4>
+      <p data-i18n="a2p">你的优点是想自己搞懂。继续保持，老师只负责引导，答案永远是你自己想出来的。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="cno">伍</span><span data-i18n="pTitle">💌 给家长的话</span></h2>
+    <div class="en">A note for parents</div>
+    <div class="advice">
+      <p data-i18n="p1">小明这两周进步明显：错题从平均每周 6 道降到 2 道，开始主动安排学习。建议家长：</p>
+      <p data-i18n="p2">① 每周看一次这样的报告就行，不用天天催；② 孩子答错时，忍住别直接给答案——让他和老师多"磨"一会儿，思考习惯更值钱。</p>
+      <div class="en">Mistakes dropped from ~6 to 2 per week and he now plans his own study. Review weekly — and resist giving answers; let him grind with the AI teacher.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="cno">陆</span><span data-i18n="wtTitle">🕐 本周学习时间分布</span></h2>
+    <div class="en">Study time this week</div>
+    <div class="bars">
+      <div class="bcol"><span class="bval">30′</span><div class="bfill" style="height:60%"></div></div>
+      <div class="bcol"><span class="bval">20′</span><div class="bfill" style="height:40%"></div></div>
+      <div class="bcol"><span class="bval">40′</span><div class="bfill" style="height:80%"></div></div>
+      <div class="bcol"><span class="bval">25′</span><div class="bfill" style="height:50%"></div></div>
+      <div class="bcol"><span class="bval">15′</span><div class="bfill" style="height:30%"></div></div>
+      <div class="bcol"><span class="bval">50′</span><div class="bfill wk" style="height:100%"></div></div>
+      <div class="bcol"><span class="bval">30′</span><div class="bfill wk" style="height:60%"></div></div>
+    </div>
+    <div class="blabels">
+      <span data-i18n="wtD1">周一</span><span data-i18n="wtD2">周二</span><span data-i18n="wtD3">周三</span><span data-i18n="wtD4">周四</span><span data-i18n="wtD5">周五</span><span data-i18n="wtD6">周六</span><span data-i18n="wtD7">周日</span>
+    </div>
+    <div class="btotal" data-i18n="wtTotal">本周合计 3.5 小时 · 7 天全勤，周末块状时间用得最足</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="cno">柒</span><span data-i18n="rdTitle">🎯 能力五维图</span></h2>
+    <div class="en">Five ability dimensions</div>
+    <svg class="radar" viewBox="-30 -6 272 204" role="img" aria-hidden="true">
+      <polygon class="grid" points="100,20 176.1,75.3 147,164.7 53,164.7 23.9,75.3"/>
+      <polygon class="grid" points="100,60 138,87.7 123.5,132.4 76.5,132.4 62,87.7"/>
+      <line class="axis" x1="100" y1="100" x2="100" y2="20"/>
+      <line class="axis" x1="100" y1="100" x2="176.1" y2="75.3"/>
+      <line class="axis" x1="100" y1="100" x2="147" y2="164.7"/>
+      <line class="axis" x1="100" y1="100" x2="53" y2="164.7"/>
+      <line class="axis" x1="100" y1="100" x2="23.9" y2="75.3"/>
+      <polygon class="data" points="100,32 157.1,81.5 142.3,158.2 67.1,145.3 39.1,80.2"/>
+      <circle class="dot" cx="100" cy="32" r="3"/>
+      <circle class="dot" cx="157.1" cy="81.5" r="3"/>
+      <circle class="dot" cx="142.3" cy="158.2" r="3"/>
+      <circle class="dot" cx="67.1" cy="145.3" r="3"/>
+      <circle class="dot" cx="39.1" cy="80.2" r="3"/>
+      <text class="num" x="106" y="27">85</text>
+      <text class="num" x="163" y="79">75</text>
+      <text class="num" x="148" y="173">90</text>
+      <text class="num" x="52" y="173">70</text>
+      <text class="num" x="27" y="77">80</text>
+      <text class="lab" x="100" y="12" text-anchor="middle" data-i18n="rdL1">理解力</text>
+      <text class="lab" x="184" y="72" text-anchor="start" data-i18n="rdL2">计算</text>
+      <text class="lab" x="154" y="186" text-anchor="start" data-i18n="rdL3">专注</text>
+      <text class="lab" x="46" y="186" text-anchor="end" data-i18n="rdL4">表达</text>
+      <text class="lab" x="16" y="72" text-anchor="end" data-i18n="rdL5">记忆</text>
+    </svg>
+  </div>
+
+  <div class="card">
+    <h2><span class="cno">捌</span><span data-i18n="svTitle">📚 各科概览</span></h2>
+    <div class="en">Subject overview</div>
+    <div class="subj-row">
+      <div class="subj">
+        <div class="sj-top"><span class="sj-name" data-i18n="svN1">数学</span><span class="sj-pct">92%</span></div>
+        <div class="sj-note" data-i18n="svC1">天平法学方程已过关，正确率稳步提升。</div>
+      </div>
+      <div class="subj">
+        <div class="sj-top"><span class="sj-name" data-i18n="svN2">语文</span><span class="sj-pct">88%</span></div>
+        <div class="sj-note" data-i18n="svC2">画面想象是强项，作文细节越来越生动。</div>
+      </div>
+      <div class="subj">
+        <div class="sj-top"><span class="sj-name" data-i18n="svN3">英语</span><span class="sj-pct">79%</span></div>
+        <div class="sj-note" data-i18n="svC3">发音要多开口跟读，词汇量稳步上涨。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="cno">玖</span><span data-i18n="npTitle">🗓️ 下周学习计划</span></h2>
+    <div class="en">Next week's study plan</div>
+    <table class="plan-table">
+      <thead><tr><th data-i18n="npH1">日期</th><th data-i18n="npH2">科目</th><th data-i18n="npH3">知识点</th><th data-i18n="npH4">预计时长</th></tr></thead>
+      <tbody>
+        <tr><td data-i18n="np1a">周一</td><td data-i18n="np1b">数学</td><td data-i18n="np1c">比例与行程 · 线段图法</td><td data-i18n="np1d">25 分钟</td></tr>
+        <tr><td data-i18n="np2a">周二</td><td data-i18n="np2b">数学</td><td data-i18n="np2c">百分数与折扣 · 生活应用</td><td data-i18n="np2d">20 分钟</td></tr>
+        <tr><td data-i18n="np3a">周三</td><td data-i18n="np3b">语文</td><td data-i18n="np3c">古诗意境 · 画面想象</td><td data-i18n="np3d">20 分钟</td></tr>
+        <tr><td data-i18n="np4a">周五</td><td data-i18n="np4b">英语</td><td data-i18n="np4c">自然拼读 · 发音巩固</td><td data-i18n="np4d">15 分钟</td></tr>
+        <tr><td data-i18n="np5a">周六</td><td data-i18n="np5b">数学</td><td data-i18n="np5c">错题重练 · 混合复习</td><td data-i18n="np5d">30 分钟</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <span data-i18n="f1">本报告由龙悟虚拟学校的 AI 校长自动生成 · 数据只保存在你家电脑</span><br>
+    <span data-i18n="f2">Generated automatically by the Longwu AI principal · data never leaves your computer</span><br>
+    <a href="../index.html" data-i18n="f3">← 回主页看更多</a> · <a href="interactive-demo.html" data-i18n="f4">🎬 再体验一次演示</a>
+  </div>
+</div>
+
+<script>
+const I18N = {
+zh: {
+  brand:"龙悟 · 学习报告", demoLink:"🎬 回演示", homeLink:"← 回主页", flag:"示例数据 · 演示用 Sample Data",
+  name:"小明", meta1:"🎒 <b>六年级</b>", meta2:"小升初冲刺阶段", meta3:"📚 教材：人教版", meta4:"🖥️ 学习方式：本地 AI 老师（文件夹）",
+  period:"📅 本报告周期：2026-08-18 ～ 2026-08-30（两周）",
+  s1:"学习天数", s2:"累计学时", s3:"答题正确率", s4:"已消灭错题",
+  mTitle:"📊 知识点掌握度", m1:"分数应用题（单位1）", m2:"简易方程（天平法）", m3:"数轴与正负数", m4:"百分数与折扣", m5:"比例与行程问题",
+  wTitle:"📒 错题回顾（本周期最有价值的 2 道）",
+  wq1:"1. 一根绳子，第一次用去 1/2，第二次用去剩下的 1/3，还剩全长的几分之几？<span class=\"tag\">错因：单位1 变化</span>",
+  wa1:"当时答：还剩 1/6 · <span class=\"ok\">正确：1/3 —— 第二次的\"单位1\"变成了剩下的半根，老师用线段图画给你看，一次就通了。</span>",
+  wq2:"2. 一件衣服先涨 10%，再降 10%，现价和原价比？<span class=\"tag\">错因：误以为抵消</span>",
+  wa2:"当时答：不变 · <span class=\"ok\">正确：变便宜了 —— 两次的\"单位1\"不同，AI 老师用\"先涨后降\"的生活例子帮你记住了。</span>",
+  oTitle:"😊 情绪与专注观察", o1:"学习状态整体很稳", o1p:"12 天里有 9 天是主动开始学习的；连续答题超过 25 分钟时，老师会安排\"缓一缓\"，你的投入度保持得不错。",
+  o2:"一个要夸的点", o2p:"上周四遇到难题说了句\"我再想想\"，没有求助也没有放弃——老师把你这个瞬间记下来了。",
+  aTitle:"🎯 老师给孩子的建议", a1:"攻下\"比例与行程\"这座小山", a1p:"这是你目前最薄弱的知识点（58%）。接下来两周，每天 1 道行程题 + 线段图法，老师陪你把它推到 80% 以上。",
+  a2:"保持\"多问为什么\"", a2p:"你的优点是想自己搞懂。继续保持，老师只负责引导，答案永远是你自己想出来的。",
+  pTitle:"💌 给家长的话", p1:"小明这两周进步明显：错题从平均每周 6 道降到 2 道，开始主动安排学习。建议家长：",
+  wtTitle:"🕐 本周学习时间分布",
+  wtD1:"周一", wtD2:"周二", wtD3:"周三", wtD4:"周四", wtD5:"周五", wtD6:"周六", wtD7:"周日",
+  wtTotal:"本周合计 3.5 小时 · 7 天全勤，周末块状时间用得最足",
+  rdTitle:"🎯 能力五维图",
+  rdL1:"理解力", rdL2:"计算", rdL3:"专注", rdL4:"表达", rdL5:"记忆",
+  svTitle:"📚 各科概览",
+  svN1:"数学", svC1:"天平法学方程已过关，正确率稳步提升。",
+  svN2:"语文", svC2:"画面想象是强项，作文细节越来越生动。",
+  svN3:"英语", svC3:"发音要多开口跟读，词汇量稳步上涨。",
+  npTitle:"🗓️ 下周学习计划",
+  npH1:"日期", npH2:"科目", npH3:"知识点", npH4:"预计时长",
+  np1a:"周一", np1b:"数学", np1c:"比例与行程 · 线段图法", np1d:"25 分钟",
+  np2a:"周二", np2b:"数学", np2c:"百分数与折扣 · 生活应用", np2d:"20 分钟",
+  np3a:"周三", np3b:"语文", np3c:"古诗意境 · 画面想象", np3d:"20 分钟",
+  np4a:"周五", np4b:"英语", np4c:"自然拼读 · 发音巩固", np4d:"15 分钟",
+  np5a:"周六", np5b:"数学", np5c:"错题重练 · 混合复习", np5d:"30 分钟",
+  p2:"① 每周看一次这样的报告就行，不用天天催；② 孩子答错时，忍住别直接给答案——让他和老师多\"磨\"一会儿，思考习惯更值钱。",
+  f1:"本报告由龙悟虚拟学校的 AI 校长自动生成 · 数据只保存在你家电脑",
+  f2:"Generated automatically by the Longwu AI principal · data never leaves your computer",
+  f3:"← 回主页看更多", f4:"🎬 再体验一次演示"
+},
+en: {
+  brand:"Longwu · Study Report", demoLink:"🎬 Back to demo", homeLink:"← Home", flag:"Sample data · for demo",
+  name:"Xiao Ming", meta1:"🎒 <b>Grade 6</b>", meta2:"exam-prep stage", meta3:"📚 Textbook: PEP Edition", meta4:"🖥️ Learn with: local AI teacher (folder)",
+  period:"📅 Report period: 2026-08-18 ~ 2026-08-30 (2 weeks)",
+  s1:"Days studied", s2:"Total hours", s3:"Accuracy", s4:"Mistakes fixed",
+  mTitle:"📊 Mastery by topic", m1:"Fraction word problems", m2:"Simple equations (balance)", m3:"Number line & negatives", m4:"Percent & discount", m5:"Ratio & travel problems",
+  wTitle:"📒 Mistake review — 2 most valuable this period",
+  wq1:"1. A rope: use 1/2 first, then 1/3 of the rest — how much of the whole is left? <span class=\"tag\">cause: \"unit 1\" shifted</span>",
+  wa1:"Answered: 1/6 · <span class=\"ok\">Correct: 1/3 — the second \"unit 1\" becomes the remaining half. The teacher drew a line diagram and it clicked.</span>",
+  wq2:"2. A jacket goes up 10%, then down 10%. Final price vs original? <span class=\"tag\">cause: assumed equal</span>",
+  wa2:"Answered: unchanged · <span class=\"ok\">Correct: it's cheaper — the two \"unit 1\"s differ. A real-life example made it stick.</span>",
+  oTitle:"😊 Mood & focus notes", o1:"Steady learning state", o1p:"Started voluntarily on 9 of 12 days. The teacher schedules breaks after 25-min stretches — engagement stays healthy.",
+  o2:"A moment to praise", o2p:"Last Thursday, facing a hard problem, you said \"let me think again\" — no help, no giving up. Noted and praised.",
+  aTitle:"🎯 Teacher's advice for you", a1:"Conquer \"ratio & travel\"", a1p:"Your weakest topic (58%). For the next two weeks: one travel problem a day with the line-diagram method — let's push it past 80%.",
+  a2:"Keep asking why", a2p:"Your strength is wanting to figure things out yourself. Keep it — the teacher only guides; answers always come from you.",
+  pTitle:"💌 A note for parents", p1:"Xiao Ming improved clearly: mistakes dropped from ~6 to 2 per week, and he now plans his own study. Suggestions:",
+  wtTitle:"🕐 Study Time This Week",
+  wtD1:"Mon", wtD2:"Tue", wtD3:"Wed", wtD4:"Thu", wtD5:"Fri", wtD6:"Sat", wtD7:"Sun",
+  wtTotal:"3.5 hours this week · all 7 days, weekend blocks used best",
+  rdTitle:"🎯 Five Ability Dimensions",
+  rdL1:"Comprehension", rdL2:"Calculation", rdL3:"Focus", rdL4:"Expression", rdL5:"Memory",
+  svTitle:"📚 Subject Overview",
+  svN1:"Math", svC1:"Balance-scale equations mastered; accuracy climbing steadily.",
+  svN2:"Chinese", svC2:"Vivid imagination is a strength; writing details getting livelier.",
+  svN3:"English", svC3:"Read aloud more often; vocabulary growing steadily.",
+  npTitle:"🗓️ Next Week's Study Plan",
+  npH1:"Day", npH2:"Subject", npH3:"Topic", npH4:"Time",
+  np1a:"Mon", np1b:"Math", np1c:"Ratio & travel · line-diagram method", np1d:"25 min",
+  np2a:"Tue", np2b:"Math", np2c:"Percent & discount · real-life use", np2d:"20 min",
+  np3a:"Wed", np3b:"Chinese", np3c:"Poetry imagery · picture the scene", np3d:"20 min",
+  np4a:"Fri", np4b:"English", np4c:"Phonics · pronunciation drills", np4d:"15 min",
+  np5a:"Sat", np5b:"Math", np5c:"Mistake re-drill · mixed review", np5d:"30 min",
+  p2:"① Reading this weekly report is enough — no daily nagging; ② When he's wrong, resist giving the answer — let him grind with the AI teacher; the thinking habit matters more.",
+  f1:"Generated automatically by the Longwu AI principal · data never leaves your computer",
+  f2:"本报告由龙悟虚拟学校的 AI 校长自动生成 · 数据只保存在你家电脑",
+  f3:"← Back to home", f4:"🎬 Replay the demo"
+}
+};
+function setLang(lang){
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = I18N[lang][el.dataset.i18n]; });
+  document.getElementById('langZh').classList.toggle('active', lang==='zh');
+  document.getElementById('langEn').classList.toggle('active', lang==='en');
+  document.documentElement.lang = lang==='zh' ? 'zh-CN' : 'en';
+  try { localStorage.setItem('longwu-lang', lang); } catch(e){}
+}
+const saved = (()=>{ try { return localStorage.getItem('longwu-lang'); } catch(e){ return null; } })();
+setLang(saved === 'en' ? 'en' : 'zh');
+</script>
+</body>
+</html>

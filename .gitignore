@@ -1,0 +1,17 @@
+# 系统文件
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# 压缩包（正式版分发物，不进开源仓库）
+*.zip
+*.7z
+*.rar
+
+# 以下为“防误传保险丝”：即使这些文件出现在仓库目录里也绝不提交
+wechat-qr.jpg
+private_key.pem
+feishu_config.json
+activate.exe
+__pycache__/
+*.pyc
