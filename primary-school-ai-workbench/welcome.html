@@ -228,7 +228,7 @@ const PANELS = {
       <li>⚖️ 方程 → 天平模型</li>
       <li>📏 负数/数轴 → 数轴</li>
       <li>🍕 分数 → 披萨图 / 线段图</li>
-      <li>📐 几何 → JSXGraph 精确图形 + KaTeX 公式</li>
+      <li>📐 几何 → AI 精确绘图 + 公式排版</li>
       <li>🖼️ 古诗 → 真实水墨生图；✍️ 汉字 → 笔顺动画</li>
     </ul>
     <p style="margin-top:10px;color:var(--blue);font-weight:700;">👇 往下滑，看真实的三个动画</p>`,
@@ -281,7 +281,7 @@ JXG.Options.polygon = Object.assign({}, JXG.Options.polygon, {
 function renderViz(v) {
   const box = document.getElementById('demoBox');
   if (v === 'balance') {
-    box.innerHTML = `<div class="demo-label">⚖️ 方程天平 · x + 3 = 7（JSXGraph 精确图）</div><div id="viz-balance"></div>
+    box.innerHTML = `<div class="demo-label">⚖️ 方程天平 · x + 3 = 7（AI 精确绘图）</div><div id="viz-balance"></div>
       <div id="eq-balance" style="font-size:24px;margin-top:6px;"></div>`;
     setTimeout(() => {
       const b = JXG.JSXGraph.initBoard('viz-balance', { boundingbox: [-5.4,4.2,5.4,-2.4], axis:false, grid:false, pan:false, zoom:false, showNavigation:false, showCopyright:false, keepaspectratio:false });
