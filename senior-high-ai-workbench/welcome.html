@@ -306,8 +306,8 @@ function renderViz(v) {
       b.create('ellipse', [[0,0],[3,0],[0,2]], { strokeColor: '#3d5a7a', strokeWidth: 2, fillColor: '#e5e4df', fillOpacity: 0.45 });
     }, 60);
   } else if (v === 'formula') {
-    box.innerHTML = `<div class="demo-label">导数定义（KaTeX 精确公式）</div>
-      <div id="viz-formula" style="font-size:28px;padding:20px 0;">\\(f'(x_0) = \\lim_{\\Delta x \\to 0} \\frac{f(x_0+\\Delta x)-f(x_0)}{\\Delta x}\\)</div>`;
+    box.innerHTML = `<div class="demo-label">导数定义（AI 精确公式排版）</div>
+      <div id="viz-formula" style="font-size:28px;padding:20px 0;">\(f'(x_0) = \lim_{\Delta x \to 0} \frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}\)</div>`;
     setTimeout(() => {
       function tryRender() { if (window.renderMathInElement) { renderMathInElement(document.getElementById('viz-formula')); } else { setTimeout(tryRender, 100); } }
       tryRender();
