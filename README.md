@@ -75,13 +75,13 @@ Three iron rules: Socratic guidance before answers; instant jargon-downgrade to 
 
 | 类型 | 用什么 | 示例 |
 |---|---|---|
-| 数学精确图形/公式 | 专业数学库渲染 | 天平、数轴、几何、分数 |
+| 数学精确图形/公式 | AI 渲染的精确图形 | 天平、数轴、几何、分数 |
 | 创意画面 | AI 生图 | 古诗意境图、单词配图 |
 | 语言讲解/比喻 | 纯文字 | 大白话解释 |
 
-**绝不用手绘假图充数**——精确的归数学库，想象的归生图，比喻的归语言。
+**绝不用手绘假图充数**——精确的交给 AI 精确绘图，想象的交给 AI 生图，比喻的交给语言。
 
-Precise visuals from professional math libraries; creative visuals from image generation; metaphors in plain words. Never fake hand-drawn stand-ins.
+Precise visuals rendered by AI tools; creative visuals from image generation; metaphors in plain words. Never fake hand-drawn stand-ins.
 
 ---
 
